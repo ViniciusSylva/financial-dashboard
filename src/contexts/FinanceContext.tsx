@@ -8,13 +8,28 @@ export interface Expense {
   date: string; // ISO string
 }
 
+export interface Income {
+  id: string;
+  name: string;
+  value: number;
+  type: "salary" | "extra";
+  date: string;
+}
+
 interface FinanceContextType {
   cardExpenses: Expense[];
   generalExpenses: Expense[];
+  incomes: Income[];
   addCardExpense: (expense: Omit<Expense, "id">) => void;
   removeCardExpense: (id: string) => void;
   addGeneralExpense: (expense: Omit<Expense, "id">) => void;
   removeGeneralExpense: (id: string) => void;
+  addIncome: (income: Omit<Income, "id">) => void;
+  removeIncome: (id: string) => void;
+  updateSalary: (value: number) => void;
+  getSalaryByMonth: (year: number, month: number) => number;
+  getExtraIncomeByMonth: (year: number, month: number) => Income[];
+  getIncomeTotalByMonth: (year: number, month: number) => number;
   getCardTotalByMonth: (year: number, month: number) => number;
   getExpensesTotalByMonth: (year: number, month: number) => number;
   getCardExpensesByMonth: (year: number, month: number) => Expense[];
@@ -26,6 +41,7 @@ const FinanceContext = createContext<FinanceContextType | null>(null);
 
 const CARD_KEY = "finance_card_expenses";
 const GENERAL_KEY = "finance_general_expenses";
+const INCOME_KEY = "finance_incomes";
 
 function loadFromStorage<T>(key: string, fallback: T): T {
   try {
@@ -39,9 +55,11 @@ function loadFromStorage<T>(key: string, fallback: T): T {
 export const FinanceProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [cardExpenses, setCardExpenses] = useState<Expense[]>(() => loadFromStorage(CARD_KEY, []));
   const [generalExpenses, setGeneralExpenses] = useState<Expense[]>(() => loadFromStorage(GENERAL_KEY, []));
+  const [incomes, setIncomes] = useState<Income[]>(() => loadFromStorage(INCOME_KEY, []));
 
   useEffect(() => { localStorage.setItem(CARD_KEY, JSON.stringify(cardExpenses)); }, [cardExpenses]);
   useEffect(() => { localStorage.setItem(GENERAL_KEY, JSON.stringify(generalExpenses)); }, [generalExpenses]);
+  useEffect(() => { localStorage.setItem(INCOME_KEY, JSON.stringify(incomes)); }, [incomes]);
 
   const addCardExpense = useCallback((expense: Omit<Expense, "id">) => {
     setCardExpenses(prev => [...prev, { ...expense, id: crypto.randomUUID() }]);
@@ -58,6 +76,38 @@ export const FinanceProvider: React.FC<{ children: React.ReactNode }> = ({ child
   const removeGeneralExpense = useCallback((id: string) => {
     setGeneralExpenses(prev => prev.filter(e => e.id !== id));
   }, []);
+
+  const addIncome = useCallback((income: Omit<Income, "id">) => {
+    setIncomes(prev => [...prev, { ...income, id: crypto.randomUUID() }]);
+  }, []);
+
+  const removeIncome = useCallback((id: string) => {
+    setIncomes(prev => prev.filter(i => i.id !== id));
+  }, []);
+
+  const updateSalary = useCallback((value: number) => {
+    const now = new Date();
+    const monthKey = `${now.getFullYear()}-${now.getMonth()}`;
+    setIncomes(prev => {
+      const existing = prev.find(i => i.type === "salary" && (() => { const d = new Date(i.date); return `${d.getFullYear()}-${d.getMonth()}`; })() === monthKey);
+      if (existing) {
+        return prev.map(i => i.id === existing.id ? { ...i, value } : i);
+      }
+      return [...prev, { id: crypto.randomUUID(), name: "Salário", value, type: "salary" as const, date: now.toISOString() }];
+    });
+  }, []);
+
+  const getSalaryByMonth = useCallback((year: number, month: number) => {
+    const s = incomes.find(i => i.type === "salary" && (() => { const d = new Date(i.date); return d.getFullYear() === year && d.getMonth() === month; })());
+    return s?.value ?? 0;
+  }, [incomes]);
+
+  const getExtraIncomeByMonth = useCallback((year: number, month: number) =>
+    incomes.filter(i => i.type === "extra" && (() => { const d = new Date(i.date); return d.getFullYear() === year && d.getMonth() === month; })()), [incomes]);
+
+  const getIncomeTotalByMonth = useCallback((year: number, month: number) => {
+    return incomes.filter(i => { const d = new Date(i.date); return d.getFullYear() === year && d.getMonth() === month; }).reduce((sum, i) => sum + i.value, 0);
+  }, [incomes]);
 
   const filterByMonth = (expenses: Expense[], year: number, month: number) =>
     expenses.filter(e => {
@@ -91,9 +141,11 @@ export const FinanceProvider: React.FC<{ children: React.ReactNode }> = ({ child
 
   return (
     <FinanceContext.Provider value={{
-      cardExpenses, generalExpenses,
+      cardExpenses, generalExpenses, incomes,
       addCardExpense, removeCardExpense,
       addGeneralExpense, removeGeneralExpense,
+      addIncome, removeIncome, updateSalary,
+      getSalaryByMonth, getExtraIncomeByMonth, getIncomeTotalByMonth,
       getCardTotalByMonth, getExpensesTotalByMonth,
       getCardExpensesByMonth, getGeneralExpensesByMonth,
       getAllMonths,
