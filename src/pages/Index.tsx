@@ -1,13 +1,5 @@
-import FinanceSidebar from "@/components/FinanceSidebar";
-import DashboardContent from "@/components/DashboardContent";
+import { Navigate } from "react-router-dom";
 
-const Index = () => {
-  return (
-    <div className="flex min-h-screen bg-background">
-      <FinanceSidebar />
-      <DashboardContent />
-    </div>
-  );
-};
+const Index = () => <Navigate to="/" replace />;
 
 export default Index;
