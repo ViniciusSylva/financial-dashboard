@@ -1,10 +1,6 @@
-import { useState } from "react";
-import { CreditCard, Wallet, TrendingDown, DollarSign, Plus, X } from "lucide-react";
+import { CreditCard, Wallet, TrendingDown, DollarSign, Gift } from "lucide-react";
 import { useFinance } from "@/contexts/FinanceContext";
 import { Calendar } from "@/components/ui/calendar";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
 const MONTHS = ["Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"];
@@ -15,66 +11,41 @@ const DashboardContent = () => {
   const currentYear = now.getFullYear();
 
   const {
-    getCardTotalByMonth, getExpensesTotalByMonth,
-    getCardExpensesByMonth, getGeneralExpensesByMonth,
+    getCardTotalByMonth, getCardUnpaidTotalByMonth,
+    getExpensesTotalByMonth, getExpensesUnpaidTotalByMonth,
+    getBenefitsTotalByMonth, getBenefitsUnpaidTotalByMonth,
+    getCardExpensesByMonth, getGeneralExpensesByMonth, getBenefitExpensesByMonth,
     getSalaryByMonth, getExtraIncomeByMonth, getIncomeTotalByMonth,
-    updateSalary, addIncome, removeIncome,
+    benefitTotal,
   } = useFinance();
 
   const cardTotal = getCardTotalByMonth(currentYear, currentMonth);
+  const cardUnpaid = getCardUnpaidTotalByMonth(currentYear, currentMonth);
   const expensesTotal = getExpensesTotalByMonth(currentYear, currentMonth);
-  const totalGastos = cardTotal + expensesTotal;
+  const expensesUnpaid = getExpensesUnpaidTotalByMonth(currentYear, currentMonth);
+  const benefitsSpent = getBenefitsTotalByMonth(currentYear, currentMonth);
+  const benefitsUnpaid = getBenefitsUnpaidTotalByMonth(currentYear, currentMonth);
+
+  const totalGastos = cardUnpaid + expensesUnpaid;
   const salary = getSalaryByMonth(currentYear, currentMonth);
   const extraIncomes = getExtraIncomeByMonth(currentYear, currentMonth);
   const totalIncome = getIncomeTotalByMonth(currentYear, currentMonth);
 
   const cardExpenses = getCardExpensesByMonth(currentYear, currentMonth);
   const generalExpenses = getGeneralExpensesByMonth(currentYear, currentMonth);
+  const benefitExpensesList = getBenefitExpensesByMonth(currentYear, currentMonth);
 
   const allExpenses = [
-    ...cardExpenses.map(e => ({ ...e, source: "Cartão" })),
-    ...generalExpenses.map(e => ({ ...e, source: "Gasto" })),
-  ].sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()).slice(0, 5);
-
-  // Salary edit
-  const [salaryInput, setSalaryInput] = useState(salary > 0 ? salary.toString() : "");
-  const [editingSalary, setEditingSalary] = useState(false);
-
-  // Extra income dialog
-  const [extraOpen, setExtraOpen] = useState(false);
-  const [extraName, setExtraName] = useState("");
-  const [extraValue, setExtraValue] = useState("");
-
-  const handleSalarySave = () => {
-    const v = parseFloat(salaryInput.replace(",", "."));
-    if (!isNaN(v) && v >= 0) {
-      updateSalary(v);
-      setEditingSalary(false);
-    }
-  };
-
-  const handleAddExtra = () => {
-    const v = parseFloat(extraValue.replace(",", "."));
-    if (extraName.trim() && !isNaN(v) && v > 0) {
-      addIncome({ name: extraName.trim(), value: v, type: "extra", date: new Date().toISOString() });
-      setExtraName("");
-      setExtraValue("");
-      setExtraOpen(false);
-    }
-  };
-
-  const summaryCards = [
-    { title: "Total Gastos", value: totalGastos, icon: Wallet, colorClass: "text-finance-green", iconBg: "bg-finance-green/20" },
-    { title: "Fatura Cartão", value: cardTotal, icon: CreditCard, colorClass: "text-finance-blue", iconBg: "bg-finance-blue/20" },
-    { title: "Gastos Gerais", value: expensesTotal, icon: TrendingDown, colorClass: "text-finance-pink", iconBg: "bg-finance-pink/20" },
-  ];
+    ...cardExpenses.map(e => ({ ...e, source: "Cartão", color: "text-destructive" })),
+    ...generalExpenses.map(e => ({ ...e, source: "Gasto", color: "text-finance-blue" })),
+    ...benefitExpensesList.map(e => ({ ...e, source: "Benefício", color: "text-finance-green" })),
+  ].sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()).slice(0, 8);
 
   const saldo = totalIncome - totalGastos;
 
   return (
     <div className="flex-1 p-8 overflow-auto">
       <div className="max-w-6xl mx-auto">
-        {/* Header */}
         <div className="mb-8">
           <h2 className="text-2xl font-bold text-foreground">Dashboard</h2>
           <p className="text-muted-foreground text-sm mt-1">
@@ -83,75 +54,27 @@ const DashboardContent = () => {
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          {/* Left: main content */}
           <div className="lg:col-span-2 space-y-6">
-            {/* Income Section */}
+            {/* Income Section (read-only) */}
             <div className="bg-card border border-border rounded-xl p-5">
-              <div className="flex items-center justify-between mb-4">
-                <h3 className="text-sm font-semibold text-foreground flex items-center gap-2">
-                  <DollarSign className="h-4 w-4 text-finance-yellow" />
-                  Renda do Mês
-                </h3>
-                <Dialog open={extraOpen} onOpenChange={setExtraOpen}>
-                  <DialogTrigger asChild>
-                    <button className="flex items-center gap-1 text-xs text-finance-cyan hover:text-finance-cyan/80 transition-colors">
-                      <Plus className="h-3.5 w-3.5" /> Renda Extra
-                    </button>
-                  </DialogTrigger>
-                  <DialogContent>
-                    <DialogHeader>
-                      <DialogTitle>Adicionar Renda Extra</DialogTitle>
-                    </DialogHeader>
-                    <div className="space-y-3 pt-2">
-                      <Input placeholder="Descrição (ex: Freelance)" value={extraName} onChange={e => setExtraName(e.target.value)} />
-                      <Input placeholder="Valor" type="number" step="0.01" value={extraValue} onChange={e => setExtraValue(e.target.value)} />
-                      <Button onClick={handleAddExtra} className="w-full">Adicionar</Button>
-                    </div>
-                  </DialogContent>
-                </Dialog>
-              </div>
-
-              {/* Salary */}
+              <h3 className="text-sm font-semibold text-foreground flex items-center gap-2 mb-4">
+                <DollarSign className="h-4 w-4 text-finance-yellow" />
+                Renda do Mês
+              </h3>
               <div className="flex items-center justify-between py-2 border-b border-border">
                 <span className="text-sm text-muted-foreground">Salário Fixo</span>
-                {editingSalary ? (
-                  <div className="flex items-center gap-2">
-                    <Input
-                      className="w-32 h-8 text-sm"
-                      type="number" step="0.01"
-                      value={salaryInput}
-                      onChange={e => setSalaryInput(e.target.value)}
-                      onKeyDown={e => e.key === "Enter" && handleSalarySave()}
-                      autoFocus
-                    />
-                    <Button size="sm" variant="ghost" onClick={handleSalarySave} className="h-8 text-xs">OK</Button>
-                  </div>
-                ) : (
-                  <button
-                    onClick={() => { setSalaryInput(salary > 0 ? salary.toString() : ""); setEditingSalary(true); }}
-                    className="text-sm font-semibold text-finance-yellow hover:underline"
-                  >
-                    {salary > 0 ? `R$ ${salary.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}` : "Definir salário"}
-                  </button>
-                )}
+                <span className="text-sm font-semibold text-finance-yellow">
+                  {salary > 0 ? `R$ ${salary.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}` : "Não definido"}
+                </span>
               </div>
-
-              {/* Extra incomes */}
               {extraIncomes.map(inc => (
                 <div key={inc.id} className="flex items-center justify-between py-2 border-b border-border last:border-0">
                   <span className="text-sm text-muted-foreground">{inc.name}</span>
-                  <div className="flex items-center gap-2">
-                    <span className="text-sm font-semibold text-finance-cyan">
-                      +R$ {inc.value.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}
-                    </span>
-                    <button onClick={() => removeIncome(inc.id)} className="text-muted-foreground hover:text-destructive transition-colors">
-                      <X className="h-3.5 w-3.5" />
-                    </button>
-                  </div>
+                  <span className="text-sm font-semibold text-finance-cyan">
+                    +R$ {inc.value.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}
+                  </span>
                 </div>
               ))}
-
-              {/* Total + Saldo */}
               <div className="flex items-center justify-between pt-3 mt-2">
                 <span className="text-xs text-muted-foreground">Total Renda</span>
                 <span className="text-sm font-bold text-foreground">
@@ -159,28 +82,65 @@ const DashboardContent = () => {
                 </span>
               </div>
               <div className="flex items-center justify-between pt-1">
-                <span className="text-xs text-muted-foreground">Saldo</span>
-                <span className={cn("text-sm font-bold", saldo >= 0 ? "text-finance-green" : "text-finance-pink")}>
+                <span className="text-xs text-muted-foreground">Saldo (após gastos não pagos)</span>
+                <span className={cn("text-sm font-bold", saldo >= 0 ? "text-finance-green" : "text-destructive")}>
                   R$ {saldo.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}
                 </span>
               </div>
             </div>
 
             {/* Summary Cards */}
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-              {summaryCards.map((card) => (
-                <div key={card.title} className="bg-card border border-border rounded-xl p-5 transition-all duration-300 hover:border-primary/30 hover:shadow-lg hover:shadow-primary/5">
-                  <div className="flex items-center justify-between mb-3">
-                    <span className="text-xs font-medium text-muted-foreground uppercase tracking-wider">{card.title}</span>
-                    <div className={`p-2 rounded-lg ${card.iconBg}`}>
-                      <card.icon className="h-4 w-4" />
-                    </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+              <div className="bg-card border border-border rounded-xl p-5 transition-all duration-300 hover:border-primary/30 hover:shadow-lg">
+                <div className="flex items-center justify-between mb-3">
+                  <span className="text-xs font-medium text-muted-foreground uppercase tracking-wider">Total a Pagar</span>
+                  <div className="p-2 rounded-lg bg-finance-yellow/20">
+                    <Wallet className="h-4 w-4 text-finance-yellow" />
                   </div>
-                  <p className="text-2xl font-bold text-foreground">
-                    R$ {card.value.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}
-                  </p>
                 </div>
-              ))}
+                <p className="text-2xl font-bold text-foreground">
+                  R$ {totalGastos.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}
+                </p>
+              </div>
+
+              <div className="bg-[hsl(220_90%_56%/0.05)] border border-finance-blue/20 rounded-xl p-5 transition-all duration-300 hover:border-finance-blue/40 hover:shadow-lg">
+                <div className="flex items-center justify-between mb-3">
+                  <span className="text-xs font-medium text-muted-foreground uppercase tracking-wider">Gastos Gerais</span>
+                  <div className="p-2 rounded-lg bg-finance-blue/20">
+                    <TrendingDown className="h-4 w-4 text-finance-blue" />
+                  </div>
+                </div>
+                <p className="text-2xl font-bold text-foreground">
+                  R$ {expensesUnpaid.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}
+                </p>
+                <p className="text-xs text-muted-foreground mt-1">Total: R$ {expensesTotal.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}</p>
+              </div>
+
+              <div className="bg-[hsl(0_72%_56%/0.05)] border border-destructive/20 rounded-xl p-5 transition-all duration-300 hover:border-destructive/40 hover:shadow-lg">
+                <div className="flex items-center justify-between mb-3">
+                  <span className="text-xs font-medium text-muted-foreground uppercase tracking-wider">Fatura Cartão</span>
+                  <div className="p-2 rounded-lg bg-destructive/20">
+                    <CreditCard className="h-4 w-4 text-destructive" />
+                  </div>
+                </div>
+                <p className="text-2xl font-bold text-foreground">
+                  R$ {cardUnpaid.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}
+                </p>
+                <p className="text-xs text-muted-foreground mt-1">Total: R$ {cardTotal.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}</p>
+              </div>
+
+              <div className="bg-[hsl(160_84%_44%/0.05)] border border-finance-green/20 rounded-xl p-5 transition-all duration-300 hover:border-finance-green/40 hover:shadow-lg">
+                <div className="flex items-center justify-between mb-3">
+                  <span className="text-xs font-medium text-muted-foreground uppercase tracking-wider">Benefícios</span>
+                  <div className="p-2 rounded-lg bg-finance-green/20">
+                    <Gift className="h-4 w-4 text-finance-green" />
+                  </div>
+                </div>
+                <p className="text-2xl font-bold text-foreground">
+                  R$ {benefitsSpent.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}
+                </p>
+                <p className="text-xs text-muted-foreground mt-1">Limite: R$ {benefitTotal.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}</p>
+              </div>
             </div>
 
             {/* Recent Transactions */}
@@ -193,12 +153,15 @@ const DashboardContent = () => {
               ) : (
                 <div className="flex flex-col gap-3">
                   {allExpenses.map((tx) => (
-                    <div key={tx.id} className="flex items-center justify-between py-2 border-b border-border last:border-0">
+                    <div key={tx.id} className={cn(
+                      "flex items-center justify-between py-2 border-b border-border last:border-0",
+                      tx.paid && "opacity-50"
+                    )}>
                       <div>
-                        <p className="text-sm font-medium text-foreground">{tx.name}</p>
-                        <p className="text-xs text-muted-foreground">{tx.category} · {tx.source}</p>
+                        <p className={cn("text-sm font-medium text-foreground", tx.paid && "line-through")}>{tx.name}</p>
+                        <p className="text-xs text-muted-foreground">{tx.category} · {tx.source} {tx.paid ? "· Pago ✓" : ""}</p>
                       </div>
-                      <span className="text-sm font-semibold text-finance-pink">
+                      <span className={cn("text-sm font-semibold", tx.color)}>
                         -R$ {tx.value.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}
                       </span>
                     </div>
