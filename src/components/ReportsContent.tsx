@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { FileBarChart, Pencil, Trash2, Plus } from "lucide-react";
+import { FileBarChart, Trash2, Plus } from "lucide-react";
 import { useFinance } from "@/contexts/FinanceContext";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from "recharts";
 import { Button } from "@/components/ui/button";
@@ -27,16 +27,16 @@ const CustomTooltip = ({ active, payload, label }: any) => {
 
 const ReportsContent = () => {
   const {
-    getAllMonths, getCardTotalByMonth, getExpensesTotalByMonth, getBenefitsTotalByMonth,
-    getCardExpensesByMonth, getGeneralExpensesByMonth, getBenefitExpensesByMonth,
-    addCardExpense, addGeneralExpense, addBenefitExpense,
-    removeCardExpense, removeGeneralExpense, removeBenefitExpense,
+    getAllMonths, getCardTotalByMonth, getExpensesTotalByMonth,
+    getCardExpensesByMonth, getGeneralExpensesByMonth,
+    addCardExpense, addGeneralExpense,
+    removeCardExpense, removeGeneralExpense,
     getSalaryByMonth, getIncomeTotalByMonth,
   } = useFinance();
 
   const months = getAllMonths();
 
-  const [addDialog, setAddDialog] = useState<{ year: number; month: number; type: "card" | "general" | "benefit" } | null>(null);
+  const [addDialog, setAddDialog] = useState<{ year: number; month: number; type: "card" | "general" } | null>(null);
   const [addName, setAddName] = useState("");
   const [addValue, setAddValue] = useState("");
 
@@ -44,7 +44,6 @@ const ReportsContent = () => {
     name: `${MONTHS[m.month]}/${m.year}`,
     gastos: getExpensesTotalByMonth(m.year, m.month),
     cartao: getCardTotalByMonth(m.year, m.month),
-    beneficios: getBenefitsTotalByMonth(m.year, m.month),
   })).reverse();
 
   const handleAddExpense = () => {
@@ -53,14 +52,9 @@ const ReportsContent = () => {
     if (isNaN(v) || v <= 0) return;
     const date = new Date(addDialog.year, addDialog.month, 15).toISOString();
     const expense = { name: addName.trim(), category: "Outros", value: v, date };
-
     if (addDialog.type === "card") addCardExpense(expense);
-    else if (addDialog.type === "general") addGeneralExpense(expense);
-    else addBenefitExpense(expense);
-
-    setAddName("");
-    setAddValue("");
-    setAddDialog(null);
+    else addGeneralExpense(expense);
+    setAddName(""); setAddValue(""); setAddDialog(null);
   };
 
   return (
@@ -78,7 +72,6 @@ const ReportsContent = () => {
           </div>
         ) : (
           <>
-            {/* Chart */}
             <div className="bg-card border border-border rounded-xl p-6 mb-6">
               <h3 className="text-sm font-semibold text-foreground mb-4">Comparativo Mensal</h3>
               <ResponsiveContainer width="100%" height={300}>
@@ -90,20 +83,15 @@ const ReportsContent = () => {
                   <Legend />
                   <Bar dataKey="gastos" name="Gastos" fill="hsl(220, 90%, 56%)" radius={[4, 4, 0, 0]} />
                   <Bar dataKey="cartao" name="Cartão" fill="hsl(0, 72%, 56%)" radius={[4, 4, 0, 0]} />
-                  <Bar dataKey="beneficios" name="Benefícios" fill="hsl(160, 84%, 44%)" radius={[4, 4, 0, 0]} />
                 </BarChart>
               </ResponsiveContainer>
             </div>
 
-            {/* Monthly Breakdown */}
             {months.map(m => {
               const cardExp = getCardExpensesByMonth(m.year, m.month);
               const genExp = getGeneralExpensesByMonth(m.year, m.month);
-              const benExp = getBenefitExpensesByMonth(m.year, m.month);
               const cardTotal = getCardTotalByMonth(m.year, m.month);
               const genTotal = getExpensesTotalByMonth(m.year, m.month);
-              const benTotal = getBenefitsTotalByMonth(m.year, m.month);
-              const salary = getSalaryByMonth(m.year, m.month);
               const income = getIncomeTotalByMonth(m.year, m.month);
 
               return (
@@ -112,74 +100,36 @@ const ReportsContent = () => {
                     <h3 className="text-sm font-semibold text-foreground">{MONTHS_FULL[m.month]} {m.year}</h3>
                     <div className="flex items-center gap-4 text-xs">
                       <span className="text-finance-yellow">Renda: R$ {income.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}</span>
-                      <span className="text-destructive font-bold">
-                        Total: R$ {(cardTotal + genTotal + benTotal).toLocaleString("pt-BR", { minimumFractionDigits: 2 })}
-                      </span>
+                      <span className="text-destructive font-bold">Total: R$ {(cardTotal + genTotal).toLocaleString("pt-BR", { minimumFractionDigits: 2 })}</span>
                     </div>
                   </div>
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    {/* Gastos */}
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
                       <div className="flex items-center justify-between mb-2">
                         <p className="text-xs text-finance-blue font-medium">Gastos — R$ {genTotal.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}</p>
-                        <button onClick={() => setAddDialog({ year: m.year, month: m.month, type: "general" })} className="text-finance-blue hover:text-finance-blue/70">
-                          <Plus className="h-3.5 w-3.5" />
-                        </button>
+                        <button onClick={() => setAddDialog({ year: m.year, month: m.month, type: "general" })} className="text-finance-blue hover:text-finance-blue/70"><Plus className="h-3.5 w-3.5" /></button>
                       </div>
-                      {genExp.length === 0 ? (
-                        <p className="text-xs text-muted-foreground">Sem gastos</p>
-                      ) : genExp.map(e => (
+                      {genExp.length === 0 ? <p className="text-xs text-muted-foreground">Sem gastos</p> : genExp.map(e => (
                         <div key={e.id} className="flex justify-between text-xs py-1 group">
                           <span className="text-muted-foreground">{e.name}</span>
                           <div className="flex items-center gap-1">
                             <span className="text-foreground">R$ {e.value.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}</span>
-                            <button onClick={() => removeGeneralExpense(e.id)} className="opacity-0 group-hover:opacity-100 text-destructive">
-                              <Trash2 className="h-3 w-3" />
-                            </button>
+                            <button onClick={() => removeGeneralExpense(e.id)} className="opacity-0 group-hover:opacity-100 text-destructive"><Trash2 className="h-3 w-3" /></button>
                           </div>
                         </div>
                       ))}
                     </div>
-                    {/* Cartão */}
                     <div>
                       <div className="flex items-center justify-between mb-2">
                         <p className="text-xs text-destructive font-medium">Cartão — R$ {cardTotal.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}</p>
-                        <button onClick={() => setAddDialog({ year: m.year, month: m.month, type: "card" })} className="text-destructive hover:text-destructive/70">
-                          <Plus className="h-3.5 w-3.5" />
-                        </button>
+                        <button onClick={() => setAddDialog({ year: m.year, month: m.month, type: "card" })} className="text-destructive hover:text-destructive/70"><Plus className="h-3.5 w-3.5" /></button>
                       </div>
-                      {cardExp.length === 0 ? (
-                        <p className="text-xs text-muted-foreground">Sem gastos</p>
-                      ) : cardExp.map(e => (
+                      {cardExp.length === 0 ? <p className="text-xs text-muted-foreground">Sem gastos</p> : cardExp.map(e => (
                         <div key={e.id} className="flex justify-between text-xs py-1 group">
                           <span className="text-muted-foreground">{e.name}</span>
                           <div className="flex items-center gap-1">
                             <span className="text-foreground">R$ {e.value.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}</span>
-                            <button onClick={() => removeCardExpense(e.id)} className="opacity-0 group-hover:opacity-100 text-destructive">
-                              <Trash2 className="h-3 w-3" />
-                            </button>
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                    {/* Benefícios */}
-                    <div>
-                      <div className="flex items-center justify-between mb-2">
-                        <p className="text-xs text-finance-green font-medium">Benefícios — R$ {benTotal.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}</p>
-                        <button onClick={() => setAddDialog({ year: m.year, month: m.month, type: "benefit" })} className="text-finance-green hover:text-finance-green/70">
-                          <Plus className="h-3.5 w-3.5" />
-                        </button>
-                      </div>
-                      {benExp.length === 0 ? (
-                        <p className="text-xs text-muted-foreground">Sem gastos</p>
-                      ) : benExp.map(e => (
-                        <div key={e.id} className="flex justify-between text-xs py-1 group">
-                          <span className="text-muted-foreground">{e.name}</span>
-                          <div className="flex items-center gap-1">
-                            <span className="text-foreground">R$ {e.value.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}</span>
-                            <button onClick={() => removeBenefitExpense(e.id)} className="opacity-0 group-hover:opacity-100 text-destructive">
-                              <Trash2 className="h-3 w-3" />
-                            </button>
+                            <button onClick={() => removeCardExpense(e.id)} className="opacity-0 group-hover:opacity-100 text-destructive"><Trash2 className="h-3 w-3" /></button>
                           </div>
                         </div>
                       ))}
@@ -192,12 +142,11 @@ const ReportsContent = () => {
         )}
       </div>
 
-      {/* Add expense dialog for past months */}
       <Dialog open={!!addDialog} onOpenChange={(o) => !o && setAddDialog(null)}>
         <DialogContent className="bg-card border-border">
           <DialogHeader>
             <DialogTitle className="text-foreground">
-              Adicionar {addDialog?.type === "card" ? "Gasto Cartão" : addDialog?.type === "benefit" ? "Gasto Benefício" : "Gasto Geral"}
+              Adicionar {addDialog?.type === "card" ? "Gasto Cartão" : "Gasto Geral"}
               {addDialog && ` — ${MONTHS_FULL[addDialog.month]} ${addDialog.year}`}
             </DialogTitle>
           </DialogHeader>

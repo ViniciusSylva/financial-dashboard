@@ -8,7 +8,6 @@ import Layout from "@/components/Layout";
 import DashboardContent from "@/components/DashboardContent";
 import CardContent from "@/components/CardContent";
 import ExpensesContent from "@/components/ExpensesContent";
-import BenefitsContent from "@/components/BenefitsContent";
 import ReportsContent from "@/components/ReportsContent";
 import GoalsContent from "@/components/GoalsContent";
 import NotFound from "./pages/NotFound";
@@ -27,7 +26,6 @@ const App = () => (
               <Route path="/" element={<DashboardContent />} />
               <Route path="/gastos" element={<ExpensesContent />} />
               <Route path="/cartao" element={<CardContent />} />
-              <Route path="/beneficios" element={<BenefitsContent />} />
               <Route path="/metas" element={<GoalsContent />} />
               <Route path="/relatorios" element={<ReportsContent />} />
             </Route>

@@ -1,5 +1,11 @@
 import React, { createContext, useContext, useState, useEffect, useCallback } from "react";
 
+export interface PaymentSources {
+  salary?: number;
+  extra?: number;
+  vale?: number;
+}
+
 export interface Expense {
   id: string;
   name: string;
@@ -7,57 +13,45 @@ export interface Expense {
   value: number;
   date: string;
   paid: boolean;
+  paymentSources?: PaymentSources;
 }
 
 export interface Income {
   id: string;
   name: string;
   value: number;
-  type: "salary" | "extra";
+  type: "salary" | "extra" | "vale";
   date: string;
-}
-
-export interface BenefitExpense {
-  id: string;
-  name: string;
-  category: string;
-  value: number;
-  date: string;
-  paid: boolean;
 }
 
 interface FinanceContextType {
   cardExpenses: Expense[];
   generalExpenses: Expense[];
-  benefitExpenses: BenefitExpense[];
   incomes: Income[];
-  benefitTotal: number;
-  setBenefitTotal: (v: number) => void;
-  addCardExpense: (expense: Omit<Expense, "id" | "paid">) => void;
+  addCardExpense: (expense: Omit<Expense, "id" | "paid" | "paymentSources">) => void;
   removeCardExpense: (id: string) => void;
-  toggleCardExpensePaid: (id: string) => void;
-  addGeneralExpense: (expense: Omit<Expense, "id" | "paid">) => void;
+  markCardExpensePaid: (id: string, sources: PaymentSources) => void;
+  unmarkCardExpensePaid: (id: string) => void;
+  addGeneralExpense: (expense: Omit<Expense, "id" | "paid" | "paymentSources">) => void;
   removeGeneralExpense: (id: string) => void;
-  toggleGeneralExpensePaid: (id: string) => void;
-  addBenefitExpense: (expense: Omit<BenefitExpense, "id" | "paid">) => void;
-  removeBenefitExpense: (id: string) => void;
-  toggleBenefitExpensePaid: (id: string) => void;
+  markGeneralExpensePaid: (id: string, sources: PaymentSources) => void;
+  unmarkGeneralExpensePaid: (id: string) => void;
   addIncome: (income: Omit<Income, "id">) => void;
   removeIncome: (id: string) => void;
   updateIncome: (id: string, value: number) => void;
   updateSalary: (value: number) => void;
+  updateVale: (value: number) => void;
   getSalaryByMonth: (year: number, month: number) => number;
+  getValeByMonth: (year: number, month: number) => number;
   getExtraIncomeByMonth: (year: number, month: number) => Income[];
   getIncomeTotalByMonth: (year: number, month: number) => number;
   getCardTotalByMonth: (year: number, month: number) => number;
   getCardUnpaidTotalByMonth: (year: number, month: number) => number;
   getExpensesTotalByMonth: (year: number, month: number) => number;
   getExpensesUnpaidTotalByMonth: (year: number, month: number) => number;
-  getBenefitsTotalByMonth: (year: number, month: number) => number;
-  getBenefitsUnpaidTotalByMonth: (year: number, month: number) => number;
   getCardExpensesByMonth: (year: number, month: number) => Expense[];
   getGeneralExpensesByMonth: (year: number, month: number) => Expense[];
-  getBenefitExpensesByMonth: (year: number, month: number) => BenefitExpense[];
+  getUsedFromSource: (year: number, month: number, source: "salary" | "extra" | "vale") => number;
   getAllMonths: () => { year: number; month: number }[];
 }
 
@@ -65,9 +59,7 @@ const FinanceContext = createContext<FinanceContextType | null>(null);
 
 const CARD_KEY = "finance_card_expenses";
 const GENERAL_KEY = "finance_general_expenses";
-const BENEFIT_KEY = "finance_benefit_expenses";
 const INCOME_KEY = "finance_incomes";
-const BENEFIT_TOTAL_KEY = "finance_benefit_total";
 
 function loadFromStorage<T>(key: string, fallback: T): T {
   try {
@@ -81,46 +73,36 @@ function loadFromStorage<T>(key: string, fallback: T): T {
 export const FinanceProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [cardExpenses, setCardExpenses] = useState<Expense[]>(() => loadFromStorage(CARD_KEY, []));
   const [generalExpenses, setGeneralExpenses] = useState<Expense[]>(() => loadFromStorage(GENERAL_KEY, []));
-  const [benefitExpenses, setBenefitExpenses] = useState<BenefitExpense[]>(() => loadFromStorage(BENEFIT_KEY, []));
   const [incomes, setIncomes] = useState<Income[]>(() => loadFromStorage(INCOME_KEY, []));
-  const [benefitTotal, setBenefitTotalState] = useState<number>(() => loadFromStorage(BENEFIT_TOTAL_KEY, 0));
 
   useEffect(() => { localStorage.setItem(CARD_KEY, JSON.stringify(cardExpenses)); }, [cardExpenses]);
   useEffect(() => { localStorage.setItem(GENERAL_KEY, JSON.stringify(generalExpenses)); }, [generalExpenses]);
-  useEffect(() => { localStorage.setItem(BENEFIT_KEY, JSON.stringify(benefitExpenses)); }, [benefitExpenses]);
   useEffect(() => { localStorage.setItem(INCOME_KEY, JSON.stringify(incomes)); }, [incomes]);
-  useEffect(() => { localStorage.setItem(BENEFIT_TOTAL_KEY, JSON.stringify(benefitTotal)); }, [benefitTotal]);
 
-  const setBenefitTotal = useCallback((v: number) => setBenefitTotalState(v), []);
-
-  const addCardExpense = useCallback((expense: Omit<Expense, "id" | "paid">) => {
+  const addCardExpense = useCallback((expense: Omit<Expense, "id" | "paid" | "paymentSources">) => {
     setCardExpenses(prev => [...prev, { ...expense, id: crypto.randomUUID(), paid: false }]);
   }, []);
   const removeCardExpense = useCallback((id: string) => {
     setCardExpenses(prev => prev.filter(e => e.id !== id));
   }, []);
-  const toggleCardExpensePaid = useCallback((id: string) => {
-    setCardExpenses(prev => prev.map(e => e.id === id ? { ...e, paid: !e.paid } : e));
+  const markCardExpensePaid = useCallback((id: string, sources: PaymentSources) => {
+    setCardExpenses(prev => prev.map(e => e.id === id ? { ...e, paid: true, paymentSources: sources } : e));
+  }, []);
+  const unmarkCardExpensePaid = useCallback((id: string) => {
+    setCardExpenses(prev => prev.map(e => e.id === id ? { ...e, paid: false, paymentSources: undefined } : e));
   }, []);
 
-  const addGeneralExpense = useCallback((expense: Omit<Expense, "id" | "paid">) => {
+  const addGeneralExpense = useCallback((expense: Omit<Expense, "id" | "paid" | "paymentSources">) => {
     setGeneralExpenses(prev => [...prev, { ...expense, id: crypto.randomUUID(), paid: false }]);
   }, []);
   const removeGeneralExpense = useCallback((id: string) => {
     setGeneralExpenses(prev => prev.filter(e => e.id !== id));
   }, []);
-  const toggleGeneralExpensePaid = useCallback((id: string) => {
-    setGeneralExpenses(prev => prev.map(e => e.id === id ? { ...e, paid: !e.paid } : e));
+  const markGeneralExpensePaid = useCallback((id: string, sources: PaymentSources) => {
+    setGeneralExpenses(prev => prev.map(e => e.id === id ? { ...e, paid: true, paymentSources: sources } : e));
   }, []);
-
-  const addBenefitExpense = useCallback((expense: Omit<BenefitExpense, "id" | "paid">) => {
-    setBenefitExpenses(prev => [...prev, { ...expense, id: crypto.randomUUID(), paid: false }]);
-  }, []);
-  const removeBenefitExpense = useCallback((id: string) => {
-    setBenefitExpenses(prev => prev.filter(e => e.id !== id));
-  }, []);
-  const toggleBenefitExpensePaid = useCallback((id: string) => {
-    setBenefitExpenses(prev => prev.map(e => e.id === id ? { ...e, paid: !e.paid } : e));
+  const unmarkGeneralExpensePaid = useCallback((id: string) => {
+    setGeneralExpenses(prev => prev.map(e => e.id === id ? { ...e, paid: false, paymentSources: undefined } : e));
   }, []);
 
   const addIncome = useCallback((income: Omit<Income, "id">) => {
@@ -138,16 +120,29 @@ export const FinanceProvider: React.FC<{ children: React.ReactNode }> = ({ child
     const monthKey = `${now.getFullYear()}-${now.getMonth()}`;
     setIncomes(prev => {
       const existing = prev.find(i => i.type === "salary" && (() => { const d = new Date(i.date); return `${d.getFullYear()}-${d.getMonth()}`; })() === monthKey);
-      if (existing) {
-        return prev.map(i => i.id === existing.id ? { ...i, value } : i);
-      }
-      return [...prev, { id: crypto.randomUUID(), name: "Salário", value, type: "salary" as const, date: now.toISOString() }];
+      if (existing) return prev.map(i => i.id === existing.id ? { ...i, value } : i);
+      return [...prev, { id: crypto.randomUUID(), name: "Salário (salário limpo)", value, type: "salary" as const, date: now.toISOString() }];
+    });
+  }, []);
+
+  const updateVale = useCallback((value: number) => {
+    const now = new Date();
+    const monthKey = `${now.getFullYear()}-${now.getMonth()}`;
+    setIncomes(prev => {
+      const existing = prev.find(i => i.type === "vale" && (() => { const d = new Date(i.date); return `${d.getFullYear()}-${d.getMonth()}`; })() === monthKey);
+      if (existing) return prev.map(i => i.id === existing.id ? { ...i, value } : i);
+      return [...prev, { id: crypto.randomUUID(), name: "Vale", value, type: "vale" as const, date: now.toISOString() }];
     });
   }, []);
 
   const getSalaryByMonth = useCallback((year: number, month: number) => {
     const s = incomes.find(i => i.type === "salary" && (() => { const d = new Date(i.date); return d.getFullYear() === year && d.getMonth() === month; })());
     return s?.value ?? 0;
+  }, [incomes]);
+
+  const getValeByMonth = useCallback((year: number, month: number) => {
+    const v = incomes.find(i => i.type === "vale" && (() => { const d = new Date(i.date); return d.getFullYear() === year && d.getMonth() === month; })());
+    return v?.value ?? 0;
   }, [incomes]);
 
   const getExtraIncomeByMonth = useCallback((year: number, month: number) =>
@@ -157,11 +152,8 @@ export const FinanceProvider: React.FC<{ children: React.ReactNode }> = ({ child
     return incomes.filter(i => { const d = new Date(i.date); return d.getFullYear() === year && d.getMonth() === month; }).reduce((sum, i) => sum + i.value, 0);
   }, [incomes]);
 
-  const filterByMonth = (expenses: (Expense | BenefitExpense)[], year: number, month: number) =>
-    expenses.filter(e => {
-      const d = new Date(e.date);
-      return d.getFullYear() === year && d.getMonth() === month;
-    });
+  const filterByMonth = (expenses: Expense[], year: number, month: number) =>
+    expenses.filter(e => { const d = new Date(e.date); return d.getFullYear() === year && d.getMonth() === month; });
 
   const getCardTotalByMonth = useCallback((year: number, month: number) =>
     filterByMonth(cardExpenses, year, month).reduce((sum, e) => sum + e.value, 0), [cardExpenses]);
@@ -173,44 +165,39 @@ export const FinanceProvider: React.FC<{ children: React.ReactNode }> = ({ child
   const getExpensesUnpaidTotalByMonth = useCallback((year: number, month: number) =>
     filterByMonth(generalExpenses, year, month).filter(e => !e.paid).reduce((sum, e) => sum + e.value, 0), [generalExpenses]);
 
-  const getBenefitsTotalByMonth = useCallback((year: number, month: number) =>
-    filterByMonth(benefitExpenses, year, month).reduce((sum, e) => sum + e.value, 0), [benefitExpenses]);
-  const getBenefitsUnpaidTotalByMonth = useCallback((year: number, month: number) =>
-    filterByMonth(benefitExpenses, year, month).filter(e => !e.paid).reduce((sum, e) => sum + e.value, 0), [benefitExpenses]);
-
   const getCardExpensesByMonth = useCallback((year: number, month: number) =>
-    filterByMonth(cardExpenses, year, month) as Expense[], [cardExpenses]);
+    filterByMonth(cardExpenses, year, month), [cardExpenses]);
   const getGeneralExpensesByMonth = useCallback((year: number, month: number) =>
-    filterByMonth(generalExpenses, year, month) as Expense[], [generalExpenses]);
-  const getBenefitExpensesByMonth = useCallback((year: number, month: number) =>
-    filterByMonth(benefitExpenses, year, month) as BenefitExpense[], [benefitExpenses]);
+    filterByMonth(generalExpenses, year, month), [generalExpenses]);
+
+  const getUsedFromSource = useCallback((year: number, month: number, source: "salary" | "extra" | "vale") => {
+    const allPaid = [
+      ...filterByMonth(cardExpenses, year, month).filter(e => e.paid),
+      ...filterByMonth(generalExpenses, year, month).filter(e => e.paid),
+    ];
+    return allPaid.reduce((sum, e) => sum + (e.paymentSources?.[source] ?? 0), 0);
+  }, [cardExpenses, generalExpenses]);
 
   const getAllMonths = useCallback(() => {
-    const all = [...cardExpenses, ...generalExpenses, ...benefitExpenses, ...incomes.map(i => ({ date: i.date }))];
-    const set = new Set(all.map(e => {
-      const d = new Date(e.date);
-      return `${d.getFullYear()}-${d.getMonth()}`;
-    }));
+    const all = [...cardExpenses, ...generalExpenses, ...incomes.map(i => ({ date: i.date }))];
+    const set = new Set(all.map(e => { const d = new Date(e.date); return `${d.getFullYear()}-${d.getMonth()}`; }));
     return Array.from(set).map(s => {
       const [y, m] = s.split("-").map(Number);
       return { year: y, month: m };
     }).sort((a, b) => a.year !== b.year ? b.year - a.year : b.month - a.month);
-  }, [cardExpenses, generalExpenses, benefitExpenses, incomes]);
+  }, [cardExpenses, generalExpenses, incomes]);
 
   return (
     <FinanceContext.Provider value={{
-      cardExpenses, generalExpenses, benefitExpenses, incomes, benefitTotal,
-      setBenefitTotal,
-      addCardExpense, removeCardExpense, toggleCardExpensePaid,
-      addGeneralExpense, removeGeneralExpense, toggleGeneralExpensePaid,
-      addBenefitExpense, removeBenefitExpense, toggleBenefitExpensePaid,
-      addIncome, removeIncome, updateIncome, updateSalary,
-      getSalaryByMonth, getExtraIncomeByMonth, getIncomeTotalByMonth,
+      cardExpenses, generalExpenses, incomes,
+      addCardExpense, removeCardExpense, markCardExpensePaid, unmarkCardExpensePaid,
+      addGeneralExpense, removeGeneralExpense, markGeneralExpensePaid, unmarkGeneralExpensePaid,
+      addIncome, removeIncome, updateIncome, updateSalary, updateVale,
+      getSalaryByMonth, getValeByMonth, getExtraIncomeByMonth, getIncomeTotalByMonth,
       getCardTotalByMonth, getCardUnpaidTotalByMonth,
       getExpensesTotalByMonth, getExpensesUnpaidTotalByMonth,
-      getBenefitsTotalByMonth, getBenefitsUnpaidTotalByMonth,
-      getCardExpensesByMonth, getGeneralExpensesByMonth, getBenefitExpensesByMonth,
-      getAllMonths,
+      getCardExpensesByMonth, getGeneralExpensesByMonth,
+      getUsedFromSource, getAllMonths,
     }}>
       {children}
     </FinanceContext.Provider>
