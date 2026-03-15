@@ -48,60 +48,60 @@ const DashboardContent = () => {
   ].sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()).slice(0, 8);
 
   return (
-    <div className="flex-1 p-8 overflow-auto">
+    <div className="flex-1 p-4 sm:p-6 lg:p-8 overflow-auto">
       <div className="max-w-6xl mx-auto">
-        <div className="mb-8">
-          <h2 className="text-2xl font-bold text-foreground">Dashboard</h2>
-          <p className="text-muted-foreground text-sm mt-1">Visão geral de {MONTHS[currentMonth]} {currentYear}</p>
+        <div className="mb-6 sm:mb-8">
+          <h2 className="text-xl sm:text-2xl font-bold text-foreground">Dashboard</h2>
+          <p className="text-muted-foreground text-xs sm:text-sm mt-1">Visão geral de {MONTHS[currentMonth]} {currentYear}</p>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          <div className="lg:col-span-2 space-y-6">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6">
+          <div className="lg:col-span-2 space-y-4 sm:space-y-6">
             {/* Account Balances */}
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            <div className="grid grid-cols-3 gap-2 sm:gap-4">
               {/* Salary */}
-              <div className="bg-card border border-border rounded-xl p-5">
+              <div className="bg-card border border-border rounded-xl p-3 sm:p-5">
                 <div className="flex items-center justify-between mb-2">
-                  <span className="text-xs font-medium text-muted-foreground uppercase tracking-wider">Salário (limpo)</span>
-                  <div className="p-2 rounded-lg bg-finance-yellow/20"><DollarSign className="h-4 w-4 text-finance-yellow" /></div>
+                  <span className="text-[10px] sm:text-xs font-medium text-muted-foreground uppercase tracking-wider">Salário (limpo)</span>
+                  <div className="p-1.5 sm:p-2 rounded-lg bg-finance-yellow/20"><DollarSign className="h-3 w-3 sm:h-4 sm:w-4 text-finance-yellow" /></div>
                 </div>
-                <p className="text-lg font-bold text-finance-yellow">R$ {salary.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}</p>
+                <p className="text-sm sm:text-lg font-bold text-finance-yellow">R$ {salary.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}</p>
                 <div className="flex items-center justify-between mt-2 pt-2 border-t border-border">
-                  <span className="text-xs text-muted-foreground">Restante</span>
-                  <span className={cn("text-sm font-bold", remainingSalary >= 0 ? "text-finance-green" : "text-destructive")}>
+                  <span className="text-[10px] sm:text-xs text-muted-foreground">Restante</span>
+                  <span className={cn("text-xs sm:text-sm font-bold", remainingSalary >= 0 ? "text-finance-green" : "text-destructive")}>
                     R$ {remainingSalary.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}
                   </span>
                 </div>
               </div>
 
               {/* Vale */}
-              <div className="bg-card border border-border rounded-xl p-5">
+              <div className="bg-card border border-border rounded-xl p-3 sm:p-5">
                 <div className="flex items-center justify-between mb-2">
-                  <span className="text-xs font-medium text-muted-foreground uppercase tracking-wider">Vale</span>
-                  <div className="p-2 rounded-lg bg-finance-green/20"><Gift className="h-4 w-4 text-finance-green" /></div>
+                  <span className="text-[10px] sm:text-xs font-medium text-muted-foreground uppercase tracking-wider">Vale</span>
+                  <div className="p-1.5 sm:p-2 rounded-lg bg-finance-green/20"><Gift className="h-3 w-3 sm:h-4 sm:w-4 text-finance-green" /></div>
                 </div>
-                <p className="text-lg font-bold text-finance-green">R$ {vale.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}</p>
+                <p className="text-sm sm:text-lg font-bold text-finance-green">R$ {vale.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}</p>
                 <div className="flex items-center justify-between mt-2 pt-2 border-t border-border">
-                  <span className="text-xs text-muted-foreground">Restante</span>
-                  <span className={cn("text-sm font-bold", remainingVale >= 0 ? "text-finance-green" : "text-destructive")}>
+                  <span className="text-[10px] sm:text-xs text-muted-foreground">Restante</span>
+                  <span className={cn("text-xs sm:text-sm font-bold", remainingVale >= 0 ? "text-finance-green" : "text-destructive")}>
                     R$ {remainingVale.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}
                   </span>
                 </div>
               </div>
 
               {/* Extra */}
-              <div className="bg-card border border-border rounded-xl p-5">
+              <div className="bg-card border border-border rounded-xl p-3 sm:p-5">
                 <div className="flex items-center justify-between mb-2">
-                  <span className="text-xs font-medium text-muted-foreground uppercase tracking-wider">Extra</span>
-                  <div className="p-2 rounded-lg bg-finance-cyan/20"><Wallet className="h-4 w-4 text-finance-cyan" /></div>
+                  <span className="text-[10px] sm:text-xs font-medium text-muted-foreground uppercase tracking-wider">Extra</span>
+                  <div className="p-1.5 sm:p-2 rounded-lg bg-finance-cyan/20"><Wallet className="h-3 w-3 sm:h-4 sm:w-4 text-finance-cyan" /></div>
                 </div>
-                <p className="text-lg font-bold text-finance-cyan">R$ {extraTotal.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}</p>
+                <p className="text-sm sm:text-lg font-bold text-finance-cyan">R$ {extraTotal.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}</p>
                 {extraIncomes.map(inc => (
-                  <p key={inc.id} className="text-xs text-muted-foreground">{inc.name}: R$ {inc.value.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}</p>
+                  <p key={inc.id} className="text-[10px] sm:text-xs text-muted-foreground truncate">{inc.name}: R$ {inc.value.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}</p>
                 ))}
                 <div className="flex items-center justify-between mt-2 pt-2 border-t border-border">
-                  <span className="text-xs text-muted-foreground">Restante</span>
-                  <span className={cn("text-sm font-bold", remainingExtra >= 0 ? "text-finance-green" : "text-destructive")}>
+                  <span className="text-[10px] sm:text-xs text-muted-foreground">Restante</span>
+                  <span className={cn("text-xs sm:text-sm font-bold", remainingExtra >= 0 ? "text-finance-green" : "text-destructive")}>
                     R$ {remainingExtra.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}
                   </span>
                 </div>
@@ -109,40 +109,40 @@ const DashboardContent = () => {
             </div>
 
             {/* Summary Cards */}
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-              {/* Total a Pagar (combined) */}
-              <div className="bg-card border border-border rounded-xl p-5 transition-all duration-300 hover:border-primary/30 hover:shadow-lg">
-                <div className="flex items-center justify-between mb-3">
-                  <span className="text-xs font-medium text-muted-foreground uppercase tracking-wider">Total Geral</span>
-                  <div className="p-2 rounded-lg bg-finance-yellow/20"><Wallet className="h-4 w-4 text-finance-yellow" /></div>
+            <div className="grid grid-cols-3 gap-2 sm:gap-4">
+              {/* Total */}
+              <div className="bg-card border border-border rounded-xl p-3 sm:p-5 transition-all duration-300 hover:border-primary/30 hover:shadow-lg">
+                <div className="flex items-center justify-between mb-2 sm:mb-3">
+                  <span className="text-[10px] sm:text-xs font-medium text-muted-foreground uppercase tracking-wider">Total Geral</span>
+                  <div className="p-1.5 sm:p-2 rounded-lg bg-finance-yellow/20"><Wallet className="h-3 w-3 sm:h-4 sm:w-4 text-finance-yellow" /></div>
                 </div>
-                <p className="text-2xl font-bold text-foreground">R$ {totalAll.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}</p>
-                <p className="text-xs text-muted-foreground mt-1">A pagar: <span className="text-finance-yellow font-semibold">R$ {totalUnpaid.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}</span></p>
+                <p className="text-base sm:text-2xl font-bold text-foreground">R$ {totalAll.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}</p>
+                <p className="text-[10px] sm:text-xs text-muted-foreground mt-1">A pagar: <span className="text-finance-yellow font-semibold">R$ {totalUnpaid.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}</span></p>
               </div>
 
-              {/* Gastos Gerais */}
-              <div className="bg-[hsl(220_90%_56%/0.05)] border border-finance-blue/20 rounded-xl p-5 transition-all duration-300 hover:border-finance-blue/40 hover:shadow-lg">
-                <div className="flex items-center justify-between mb-3">
-                  <span className="text-xs font-medium text-muted-foreground uppercase tracking-wider">Gastos Gerais</span>
-                  <div className="p-2 rounded-lg bg-finance-blue/20"><TrendingDown className="h-4 w-4 text-finance-blue" /></div>
+              {/* Gastos */}
+              <div className="bg-[hsl(220_90%_56%/0.05)] border border-finance-blue/20 rounded-xl p-3 sm:p-5 transition-all duration-300 hover:border-finance-blue/40 hover:shadow-lg">
+                <div className="flex items-center justify-between mb-2 sm:mb-3">
+                  <span className="text-[10px] sm:text-xs font-medium text-muted-foreground uppercase tracking-wider">Gastos</span>
+                  <div className="p-1.5 sm:p-2 rounded-lg bg-finance-blue/20"><TrendingDown className="h-3 w-3 sm:h-4 sm:w-4 text-finance-blue" /></div>
                 </div>
-                <p className="text-2xl font-bold text-foreground">R$ {expensesTotal.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}</p>
-                <p className="text-xs text-muted-foreground mt-1">A pagar: <span className="text-finance-blue font-semibold">R$ {expensesUnpaid.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}</span></p>
+                <p className="text-base sm:text-2xl font-bold text-foreground">R$ {expensesTotal.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}</p>
+                <p className="text-[10px] sm:text-xs text-muted-foreground mt-1">A pagar: <span className="text-finance-blue font-semibold">R$ {expensesUnpaid.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}</span></p>
               </div>
 
-              {/* Fatura Cartão */}
-              <div className="bg-[hsl(0_72%_56%/0.05)] border border-destructive/20 rounded-xl p-5 transition-all duration-300 hover:border-destructive/40 hover:shadow-lg">
-                <div className="flex items-center justify-between mb-3">
-                  <span className="text-xs font-medium text-muted-foreground uppercase tracking-wider">Fatura Cartão</span>
-                  <div className="p-2 rounded-lg bg-destructive/20"><CreditCard className="h-4 w-4 text-destructive" /></div>
+              {/* Cartão */}
+              <div className="bg-[hsl(0_72%_56%/0.05)] border border-destructive/20 rounded-xl p-3 sm:p-5 transition-all duration-300 hover:border-destructive/40 hover:shadow-lg">
+                <div className="flex items-center justify-between mb-2 sm:mb-3">
+                  <span className="text-[10px] sm:text-xs font-medium text-muted-foreground uppercase tracking-wider">Cartão</span>
+                  <div className="p-1.5 sm:p-2 rounded-lg bg-destructive/20"><CreditCard className="h-3 w-3 sm:h-4 sm:w-4 text-destructive" /></div>
                 </div>
-                <p className="text-2xl font-bold text-foreground">R$ {cardTotal.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}</p>
-                <p className="text-xs text-muted-foreground mt-1">A pagar: <span className="text-destructive font-semibold">R$ {cardUnpaid.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}</span></p>
+                <p className="text-base sm:text-2xl font-bold text-foreground">R$ {cardTotal.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}</p>
+                <p className="text-[10px] sm:text-xs text-muted-foreground mt-1">A pagar: <span className="text-destructive font-semibold">R$ {cardUnpaid.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}</span></p>
               </div>
             </div>
 
             {/* Recent Transactions */}
-            <div className="bg-card border border-border rounded-xl p-6">
+            <div className="bg-card border border-border rounded-xl p-4 sm:p-6">
               <h3 className="text-sm font-semibold text-foreground mb-4">Transações Recentes</h3>
               {allExpenses.length === 0 ? (
                 <p className="text-muted-foreground text-sm text-center py-8">Nenhuma transação neste mês.</p>
@@ -150,11 +150,11 @@ const DashboardContent = () => {
                 <div className="flex flex-col gap-3">
                   {allExpenses.map((tx) => (
                     <div key={tx.id} className={cn("flex items-center justify-between py-2 border-b border-border last:border-0", tx.paid && "opacity-50")}>
-                      <div>
-                        <p className={cn("text-sm font-medium text-foreground", tx.paid && "line-through")}>{tx.name}</p>
-                        <p className="text-xs text-muted-foreground">{tx.category} · {tx.source} {tx.paid ? "· Pago ✓" : ""}</p>
+                      <div className="min-w-0 flex-1 mr-2">
+                        <p className={cn("text-sm font-medium text-foreground truncate", tx.paid && "line-through")}>{tx.name}</p>
+                        <p className="text-xs text-muted-foreground truncate">{tx.category} · {tx.source} {tx.paid ? "· Pago ✓" : ""}</p>
                       </div>
-                      <span className={cn("text-sm font-semibold", tx.color)}>-R$ {tx.value.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}</span>
+                      <span className={cn("text-sm font-semibold whitespace-nowrap", tx.color)}>-R$ {tx.value.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}</span>
                     </div>
                   ))}
                 </div>
@@ -162,7 +162,8 @@ const DashboardContent = () => {
             </div>
           </div>
 
-          <div className="lg:col-span-1">
+          {/* Calendar - hidden on small mobile */}
+          <div className="hidden sm:block lg:col-span-1">
             <div className="bg-card border border-border rounded-xl p-4">
               <Calendar
                 mode="single"

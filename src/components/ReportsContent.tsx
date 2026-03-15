@@ -58,29 +58,29 @@ const ReportsContent = () => {
   };
 
   return (
-    <div className="flex-1 p-8 overflow-auto">
+    <div className="flex-1 p-4 sm:p-6 lg:p-8 overflow-auto">
       <div className="max-w-5xl mx-auto">
-        <div className="mb-8">
-          <h2 className="text-2xl font-bold text-foreground">Relatórios</h2>
-          <p className="text-muted-foreground text-sm mt-1">Visão consolidada de todos os meses</p>
+        <div className="mb-6 sm:mb-8">
+          <h2 className="text-xl sm:text-2xl font-bold text-foreground">Relatórios</h2>
+          <p className="text-muted-foreground text-xs sm:text-sm mt-1">Visão consolidada de todos os meses</p>
         </div>
 
         {months.length === 0 ? (
-          <div className="bg-card border border-border rounded-xl p-12 text-center">
-            <FileBarChart className="h-12 w-12 text-muted-foreground mx-auto mb-3" />
-            <p className="text-muted-foreground">Nenhum dado registrado ainda.</p>
+          <div className="bg-card border border-border rounded-xl p-8 sm:p-12 text-center">
+            <FileBarChart className="h-10 w-10 sm:h-12 sm:w-12 text-muted-foreground mx-auto mb-3" />
+            <p className="text-muted-foreground text-sm">Nenhum dado registrado ainda.</p>
           </div>
         ) : (
           <>
-            <div className="bg-card border border-border rounded-xl p-6 mb-6">
+            <div className="bg-card border border-border rounded-xl p-4 sm:p-6 mb-4 sm:mb-6">
               <h3 className="text-sm font-semibold text-foreground mb-4">Comparativo Mensal</h3>
-              <ResponsiveContainer width="100%" height={300}>
+              <ResponsiveContainer width="100%" height={250}>
                 <BarChart data={chartData}>
                   <CartesianGrid strokeDasharray="3 3" stroke="hsl(240, 6%, 18%)" />
-                  <XAxis dataKey="name" stroke="hsl(240, 5%, 55%)" fontSize={12} />
-                  <YAxis stroke="hsl(240, 5%, 55%)" fontSize={12} />
+                  <XAxis dataKey="name" stroke="hsl(240, 5%, 55%)" fontSize={10} />
+                  <YAxis stroke="hsl(240, 5%, 55%)" fontSize={10} width={50} />
                   <Tooltip content={<CustomTooltip />} />
-                  <Legend />
+                  <Legend wrapperStyle={{ fontSize: 12 }} />
                   <Bar dataKey="gastos" name="Gastos" fill="hsl(220, 90%, 56%)" radius={[4, 4, 0, 0]} />
                   <Bar dataKey="cartao" name="Cartão" fill="hsl(0, 72%, 56%)" radius={[4, 4, 0, 0]} />
                 </BarChart>
@@ -95,15 +95,15 @@ const ReportsContent = () => {
               const income = getIncomeTotalByMonth(m.year, m.month);
 
               return (
-                <div key={`${m.year}-${m.month}`} className="bg-card border border-border rounded-xl p-6 mb-4">
-                  <div className="flex items-center justify-between mb-4">
-                    <h3 className="text-sm font-semibold text-foreground">{MONTHS_FULL[m.month]} {m.year}</h3>
-                    <div className="flex items-center gap-4 text-xs">
+                <div key={`${m.year}-${m.month}`} className="bg-card border border-border rounded-xl p-4 sm:p-6 mb-3 sm:mb-4">
+                  <div className="flex items-center justify-between mb-4 flex-wrap gap-2">
+                    <h3 className="text-xs sm:text-sm font-semibold text-foreground">{MONTHS_FULL[m.month]} {m.year}</h3>
+                    <div className="flex items-center gap-3 sm:gap-4 text-[10px] sm:text-xs">
                       <span className="text-finance-yellow">Renda: R$ {income.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}</span>
                       <span className="text-destructive font-bold">Total: R$ {(cardTotal + genTotal).toLocaleString("pt-BR", { minimumFractionDigits: 2 })}</span>
                     </div>
                   </div>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
                       <div className="flex items-center justify-between mb-2">
                         <p className="text-xs text-finance-blue font-medium">Gastos — R$ {genTotal.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}</p>
@@ -111,8 +111,8 @@ const ReportsContent = () => {
                       </div>
                       {genExp.length === 0 ? <p className="text-xs text-muted-foreground">Sem gastos</p> : genExp.map(e => (
                         <div key={e.id} className="flex justify-between text-xs py-1 group">
-                          <span className="text-muted-foreground">{e.name}</span>
-                          <div className="flex items-center gap-1">
+                          <span className="text-muted-foreground truncate mr-2">{e.name}</span>
+                          <div className="flex items-center gap-1 shrink-0">
                             <span className="text-foreground">R$ {e.value.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}</span>
                             <button onClick={() => removeGeneralExpense(e.id)} className="opacity-0 group-hover:opacity-100 text-destructive"><Trash2 className="h-3 w-3" /></button>
                           </div>
@@ -126,8 +126,8 @@ const ReportsContent = () => {
                       </div>
                       {cardExp.length === 0 ? <p className="text-xs text-muted-foreground">Sem gastos</p> : cardExp.map(e => (
                         <div key={e.id} className="flex justify-between text-xs py-1 group">
-                          <span className="text-muted-foreground">{e.name}</span>
-                          <div className="flex items-center gap-1">
+                          <span className="text-muted-foreground truncate mr-2">{e.name}</span>
+                          <div className="flex items-center gap-1 shrink-0">
                             <span className="text-foreground">R$ {e.value.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}</span>
                             <button onClick={() => removeCardExpense(e.id)} className="opacity-0 group-hover:opacity-100 text-destructive"><Trash2 className="h-3 w-3" /></button>
                           </div>

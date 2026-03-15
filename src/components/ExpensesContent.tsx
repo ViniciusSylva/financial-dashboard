@@ -31,17 +31,14 @@ const ExpensesContent = () => {
   const [category, setCategory] = useState(categories[0]);
   const [open, setOpen] = useState(false);
 
-  // Salary
   const salary = getSalaryByMonth(currentYear, currentMonth);
   const [salaryInput, setSalaryInput] = useState(salary > 0 ? salary.toString() : "");
   const [editingSalary, setEditingSalary] = useState(false);
 
-  // Vale
   const vale = getValeByMonth(currentYear, currentMonth);
   const [valeInput, setValeInput] = useState(vale > 0 ? vale.toString() : "");
   const [editingVale, setEditingVale] = useState(false);
 
-  // Extra income
   const extraIncomes = getExtraIncomeByMonth(currentYear, currentMonth);
   const [extraOpen, setExtraOpen] = useState(false);
   const [extraName, setExtraName] = useState("");
@@ -49,7 +46,6 @@ const ExpensesContent = () => {
   const [editingIncomeId, setEditingIncomeId] = useState<string | null>(null);
   const [editingIncomeValue, setEditingIncomeValue] = useState("");
 
-  // Payment source dialog
   const [payDialog, setPayDialog] = useState<{ id: string; name: string; value: number } | null>(null);
 
   const total = getExpensesTotalByMonth(currentYear, currentMonth);
@@ -105,24 +101,24 @@ const ExpensesContent = () => {
   };
 
   return (
-    <div className="flex-1 p-8 overflow-auto">
+    <div className="flex-1 p-4 sm:p-6 lg:p-8 overflow-auto">
       <div className="max-w-4xl mx-auto">
-        <div className="mb-8">
-          <h2 className="text-2xl font-bold text-foreground">Gastos</h2>
-          <p className="text-muted-foreground text-sm mt-1">Controle seus gastos gerais, renda e vale</p>
+        <div className="mb-6 sm:mb-8">
+          <h2 className="text-xl sm:text-2xl font-bold text-foreground">Gastos</h2>
+          <p className="text-muted-foreground text-xs sm:text-sm mt-1">Controle seus gastos gerais, renda e vale</p>
         </div>
 
         {/* Income Section */}
-        <div className="bg-card border border-border rounded-xl p-5 mb-6">
+        <div className="bg-card border border-border rounded-xl p-4 sm:p-5 mb-4 sm:mb-6">
           <div className="flex items-center justify-between mb-4">
-            <h3 className="text-sm font-semibold text-foreground flex items-center gap-2">
+            <h3 className="text-xs sm:text-sm font-semibold text-foreground flex items-center gap-2">
               <DollarSign className="h-4 w-4 text-finance-yellow" />
-              Renda do Mês — {MONTHS[currentMonth]}
+              Renda — {MONTHS[currentMonth]}
             </h3>
             <Dialog open={extraOpen} onOpenChange={setExtraOpen}>
               <DialogTrigger asChild>
                 <button className="flex items-center gap-1 text-xs text-finance-cyan hover:text-finance-cyan/80 transition-colors">
-                  <Plus className="h-3.5 w-3.5" /> Renda Extra
+                  <Plus className="h-3.5 w-3.5" /> Extra
                 </button>
               </DialogTrigger>
               <DialogContent>
@@ -137,50 +133,50 @@ const ExpensesContent = () => {
           </div>
 
           {/* Salary */}
-          <div className="flex items-center justify-between py-2 border-b border-border">
-            <span className="text-sm text-finance-yellow font-medium">Salário (salário limpo)</span>
+          <div className="flex items-center justify-between py-2 border-b border-border gap-2">
+            <span className="text-xs sm:text-sm text-finance-yellow font-medium whitespace-nowrap">Salário (limpo)</span>
             {editingSalary ? (
               <div className="flex items-center gap-2">
-                <Input className="w-32 h-8 text-sm" type="number" step="0.01" placeholder="Valor limpo" value={salaryInput} onChange={e => setSalaryInput(e.target.value)} onKeyDown={e => e.key === "Enter" && handleSalarySave()} autoFocus />
+                <Input className="w-24 sm:w-32 h-8 text-sm" type="number" step="0.01" placeholder="Valor limpo" value={salaryInput} onChange={e => setSalaryInput(e.target.value)} onKeyDown={e => e.key === "Enter" && handleSalarySave()} autoFocus />
                 <Button size="sm" variant="ghost" onClick={handleSalarySave} className="h-8 text-xs">OK</Button>
               </div>
             ) : (
-              <button onClick={() => { setSalaryInput(salary > 0 ? salary.toString() : ""); setEditingSalary(true); }} className="text-sm font-semibold text-finance-yellow hover:underline">
-                {salary > 0 ? `R$ ${salary.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}` : "Definir salário limpo"}
+              <button onClick={() => { setSalaryInput(salary > 0 ? salary.toString() : ""); setEditingSalary(true); }} className="text-xs sm:text-sm font-semibold text-finance-yellow hover:underline">
+                {salary > 0 ? `R$ ${salary.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}` : "Definir"}
               </button>
             )}
           </div>
 
           {/* Vale */}
-          <div className="flex items-center justify-between py-2 border-b border-border">
-            <span className="text-sm text-finance-green flex items-center gap-1.5 font-medium">
-              <Gift className="h-3.5 w-3.5" /> Vale (benefício)
+          <div className="flex items-center justify-between py-2 border-b border-border gap-2">
+            <span className="text-xs sm:text-sm text-finance-green flex items-center gap-1.5 font-medium whitespace-nowrap">
+              <Gift className="h-3.5 w-3.5" /> Vale
             </span>
             {editingVale ? (
               <div className="flex items-center gap-2">
-                <Input className="w-32 h-8 text-sm" type="number" step="0.01" value={valeInput} onChange={e => setValeInput(e.target.value)} onKeyDown={e => e.key === "Enter" && handleValeSave()} autoFocus />
+                <Input className="w-24 sm:w-32 h-8 text-sm" type="number" step="0.01" value={valeInput} onChange={e => setValeInput(e.target.value)} onKeyDown={e => e.key === "Enter" && handleValeSave()} autoFocus />
                 <Button size="sm" variant="ghost" onClick={handleValeSave} className="h-8 text-xs">OK</Button>
               </div>
             ) : (
-              <button onClick={() => { setValeInput(vale > 0 ? vale.toString() : ""); setEditingVale(true); }} className="text-sm font-semibold text-finance-green hover:underline">
-                {vale > 0 ? `R$ ${vale.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}` : "Definir vale"}
+              <button onClick={() => { setValeInput(vale > 0 ? vale.toString() : ""); setEditingVale(true); }} className="text-xs sm:text-sm font-semibold text-finance-green hover:underline">
+                {vale > 0 ? `R$ ${vale.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}` : "Definir"}
               </button>
             )}
           </div>
 
           {/* Extra incomes */}
           {extraIncomes.map(inc => (
-            <div key={inc.id} className="flex items-center justify-between py-2 border-b border-border last:border-0">
-              <span className="text-sm text-finance-cyan font-medium">{inc.name}</span>
-              <div className="flex items-center gap-2">
+            <div key={inc.id} className="flex items-center justify-between py-2 border-b border-border last:border-0 gap-2">
+              <span className="text-xs sm:text-sm text-finance-cyan font-medium truncate">{inc.name}</span>
+              <div className="flex items-center gap-2 shrink-0">
                 {editingIncomeId === inc.id ? (
                   <>
-                    <Input className="w-24 h-7 text-sm" type="number" step="0.01" value={editingIncomeValue} onChange={e => setEditingIncomeValue(e.target.value)} onKeyDown={e => e.key === "Enter" && handleEditIncomeSave(inc.id)} autoFocus />
+                    <Input className="w-20 sm:w-24 h-7 text-sm" type="number" step="0.01" value={editingIncomeValue} onChange={e => setEditingIncomeValue(e.target.value)} onKeyDown={e => e.key === "Enter" && handleEditIncomeSave(inc.id)} autoFocus />
                     <Button size="sm" variant="ghost" onClick={() => handleEditIncomeSave(inc.id)} className="h-7 text-xs">OK</Button>
                   </>
                 ) : (
                   <>
-                    <span className="text-sm font-semibold text-finance-cyan">+R$ {inc.value.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}</span>
+                    <span className="text-xs sm:text-sm font-semibold text-finance-cyan">+R$ {inc.value.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}</span>
                     <button onClick={() => { setEditingIncomeId(inc.id); setEditingIncomeValue(inc.value.toString()); }} className="text-muted-foreground hover:text-finance-cyan transition-colors"><Pencil className="h-3.5 w-3.5" /></button>
                     <button onClick={() => removeIncome(inc.id)} className="text-muted-foreground hover:text-destructive transition-colors"><span className="text-xs">✕</span></button>
                   </>
@@ -191,33 +187,36 @@ const ExpensesContent = () => {
 
           {/* Total defined / remaining */}
           <div className="flex items-center justify-between pt-3 mt-2">
-            <span className="text-xs text-muted-foreground uppercase tracking-wider">Total definido</span>
-            <span className="text-sm font-bold text-foreground">R$ {totalDefined.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}</span>
+            <span className="text-[10px] sm:text-xs text-muted-foreground uppercase tracking-wider">Total definido</span>
+            <span className="text-xs sm:text-sm font-bold text-foreground">R$ {totalDefined.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}</span>
           </div>
           <div className="flex items-center justify-between pt-1">
-            <span className="text-xs text-muted-foreground uppercase tracking-wider">Sobra (após pagos)</span>
-            <span className={cn("text-sm font-bold", totalRemaining >= 0 ? "text-finance-green" : "text-destructive")}>
+            <span className="text-[10px] sm:text-xs text-muted-foreground uppercase tracking-wider">Sobra (após pagos)</span>
+            <span className={cn("text-xs sm:text-sm font-bold", totalRemaining >= 0 ? "text-finance-green" : "text-destructive")}>
               R$ {totalRemaining.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}
             </span>
           </div>
         </div>
 
         {/* Total Card */}
-        <div className="bg-card border border-border rounded-xl p-6 mb-6">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <div className="p-3 rounded-lg bg-finance-blue/20">
-                <TrendingDown className="h-6 w-6 text-finance-blue" />
+        <div className="bg-card border border-border rounded-xl p-4 sm:p-6 mb-4 sm:mb-6">
+          <div className="flex items-center justify-between gap-3">
+            <div className="flex items-center gap-3 min-w-0">
+              <div className="p-2 sm:p-3 rounded-lg bg-finance-blue/20 shrink-0">
+                <TrendingDown className="h-5 w-5 sm:h-6 sm:w-6 text-finance-blue" />
               </div>
-              <div>
-                <p className="text-xs text-muted-foreground uppercase tracking-wider">Gastos — {MONTHS[currentMonth]}</p>
-                <p className="text-3xl font-bold text-foreground">R$ {total.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}</p>
-                <p className="text-xs text-muted-foreground">A pagar: <span className="text-finance-blue font-semibold">R$ {unpaidTotal.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}</span></p>
+              <div className="min-w-0">
+                <p className="text-[10px] sm:text-xs text-muted-foreground uppercase tracking-wider">Gastos — {MONTHS[currentMonth]}</p>
+                <p className="text-xl sm:text-3xl font-bold text-foreground">R$ {total.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}</p>
+                <p className="text-[10px] sm:text-xs text-muted-foreground">A pagar: <span className="text-finance-blue font-semibold">R$ {unpaidTotal.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}</span></p>
               </div>
             </div>
             <Dialog open={open} onOpenChange={setOpen}>
               <DialogTrigger asChild>
-                <Button className="bg-finance-blue hover:bg-finance-blue/80 text-white"><Plus className="h-4 w-4 mr-1" /> Adicionar Gasto</Button>
+                <Button size="sm" className="bg-finance-blue hover:bg-finance-blue/80 text-white shrink-0">
+                  <Plus className="h-4 w-4 sm:mr-1" />
+                  <span className="hidden sm:inline">Adicionar</span>
+                </Button>
               </DialogTrigger>
               <DialogContent className="bg-card border-border">
                 <DialogHeader><DialogTitle className="text-foreground">Novo Gasto</DialogTitle></DialogHeader>
@@ -235,7 +234,7 @@ const ExpensesContent = () => {
         </div>
 
         {/* Expenses List */}
-        <div className="bg-card border border-border rounded-xl p-6">
+        <div className="bg-card border border-border rounded-xl p-4 sm:p-6">
           <h3 className="text-sm font-semibold text-foreground mb-4">Todos os Gastos Gerais</h3>
           {generalExpenses.length === 0 ? (
             <p className="text-muted-foreground text-sm text-center py-8">Nenhum gasto registrado.</p>
@@ -248,22 +247,22 @@ const ExpensesContent = () => {
                   : "";
                 return (
                   <div key={expense.id} className={cn(
-                    "flex items-center justify-between py-3 px-4 rounded-lg border border-border",
+                    "flex items-center justify-between py-3 px-3 sm:px-4 rounded-lg border border-border gap-2",
                     expense.paid ? "bg-finance-blue/5 opacity-60" : "bg-secondary/50"
                   )}>
-                    <div className="flex items-center gap-3">
-                      <Checkbox checked={expense.paid} onCheckedChange={() => handleCheckboxChange(expense)} />
-                      <div>
-                        <p className={cn("text-sm font-medium text-foreground", expense.paid && "line-through")}>{expense.name}</p>
-                        <p className="text-xs text-muted-foreground">
-                          {expense.category} · {MONTHS[d.getMonth()]} {d.getFullYear()}
-                          {sourceLabel && <span className="ml-1 text-finance-green">· Pago com {sourceLabel}</span>}
+                    <div className="flex items-center gap-2 sm:gap-3 min-w-0 flex-1">
+                      <Checkbox checked={expense.paid} onCheckedChange={() => handleCheckboxChange(expense)} className="shrink-0" />
+                      <div className="min-w-0">
+                        <p className={cn("text-xs sm:text-sm font-medium text-foreground truncate", expense.paid && "line-through")}>{expense.name}</p>
+                        <p className="text-[10px] sm:text-xs text-muted-foreground truncate">
+                          {expense.category} · {MONTHS[d.getMonth()]}
+                          {sourceLabel && <span className="ml-1 text-finance-green">· {sourceLabel}</span>}
                         </p>
                       </div>
                     </div>
-                    <div className="flex items-center gap-3">
-                      <span className={cn("text-sm font-semibold", expense.paid ? "text-muted-foreground" : "text-finance-blue")}>-R$ {expense.value.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}</span>
-                      <button onClick={() => removeGeneralExpense(expense.id)} className="text-muted-foreground hover:text-destructive transition-colors"><Trash2 className="h-4 w-4" /></button>
+                    <div className="flex items-center gap-2 shrink-0">
+                      <span className={cn("text-xs sm:text-sm font-semibold", expense.paid ? "text-muted-foreground" : "text-finance-blue")}>-R$ {expense.value.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}</span>
+                      <button onClick={() => removeGeneralExpense(expense.id)} className="text-muted-foreground hover:text-destructive transition-colors"><Trash2 className="h-3.5 w-3.5 sm:h-4 sm:w-4" /></button>
                     </div>
                   </div>
                 );
