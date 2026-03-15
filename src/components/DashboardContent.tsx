@@ -36,7 +36,8 @@ const DashboardContent = () => {
   const remainingExtra = extraTotal - usedExtra;
   const remainingVale = vale - usedVale;
 
-  const totalGastos = cardUnpaid + expensesUnpaid;
+  const totalAll = cardTotal + expensesTotal;
+  const totalUnpaid = cardUnpaid + expensesUnpaid;
 
   const cardExpenses = getCardExpensesByMonth(currentYear, currentMonth);
   const generalExpenses = getGeneralExpensesByMonth(currentYear, currentMonth);
@@ -109,30 +110,34 @@ const DashboardContent = () => {
 
             {/* Summary Cards */}
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+              {/* Total a Pagar (combined) */}
               <div className="bg-card border border-border rounded-xl p-5 transition-all duration-300 hover:border-primary/30 hover:shadow-lg">
                 <div className="flex items-center justify-between mb-3">
-                  <span className="text-xs font-medium text-muted-foreground uppercase tracking-wider">Total a Pagar</span>
+                  <span className="text-xs font-medium text-muted-foreground uppercase tracking-wider">Total Geral</span>
                   <div className="p-2 rounded-lg bg-finance-yellow/20"><Wallet className="h-4 w-4 text-finance-yellow" /></div>
                 </div>
-                <p className="text-2xl font-bold text-foreground">R$ {totalGastos.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}</p>
+                <p className="text-2xl font-bold text-foreground">R$ {totalAll.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}</p>
+                <p className="text-xs text-muted-foreground mt-1">A pagar: <span className="text-finance-yellow font-semibold">R$ {totalUnpaid.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}</span></p>
               </div>
 
+              {/* Gastos Gerais */}
               <div className="bg-[hsl(220_90%_56%/0.05)] border border-finance-blue/20 rounded-xl p-5 transition-all duration-300 hover:border-finance-blue/40 hover:shadow-lg">
                 <div className="flex items-center justify-between mb-3">
                   <span className="text-xs font-medium text-muted-foreground uppercase tracking-wider">Gastos Gerais</span>
                   <div className="p-2 rounded-lg bg-finance-blue/20"><TrendingDown className="h-4 w-4 text-finance-blue" /></div>
                 </div>
-                <p className="text-2xl font-bold text-foreground">R$ {expensesUnpaid.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}</p>
-                <p className="text-xs text-muted-foreground mt-1">Total: R$ {expensesTotal.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}</p>
+                <p className="text-2xl font-bold text-foreground">R$ {expensesTotal.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}</p>
+                <p className="text-xs text-muted-foreground mt-1">A pagar: <span className="text-finance-blue font-semibold">R$ {expensesUnpaid.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}</span></p>
               </div>
 
+              {/* Fatura Cartão */}
               <div className="bg-[hsl(0_72%_56%/0.05)] border border-destructive/20 rounded-xl p-5 transition-all duration-300 hover:border-destructive/40 hover:shadow-lg">
                 <div className="flex items-center justify-between mb-3">
                   <span className="text-xs font-medium text-muted-foreground uppercase tracking-wider">Fatura Cartão</span>
                   <div className="p-2 rounded-lg bg-destructive/20"><CreditCard className="h-4 w-4 text-destructive" /></div>
                 </div>
-                <p className="text-2xl font-bold text-foreground">R$ {cardUnpaid.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}</p>
-                <p className="text-xs text-muted-foreground mt-1">Total: R$ {cardTotal.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}</p>
+                <p className="text-2xl font-bold text-foreground">R$ {cardTotal.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}</p>
+                <p className="text-xs text-muted-foreground mt-1">A pagar: <span className="text-destructive font-semibold">R$ {cardUnpaid.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}</span></p>
               </div>
             </div>
 

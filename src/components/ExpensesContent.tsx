@@ -60,6 +60,9 @@ const ExpensesContent = () => {
   const usedVale = getUsedFromSource(currentYear, currentMonth, "vale");
   const extraTotal = extraIncomes.reduce((s, i) => s + i.value, 0);
 
+  const totalDefined = salary + vale + extraTotal;
+  const totalRemaining = totalDefined - (total - unpaidTotal);
+
   const handleAdd = () => {
     if (!name.trim() || !value) return;
     addGeneralExpense({ name: name.trim(), category, value: parseFloat(value), date: new Date().toISOString() });
@@ -135,7 +138,7 @@ const ExpensesContent = () => {
 
           {/* Salary */}
           <div className="flex items-center justify-between py-2 border-b border-border">
-            <span className="text-sm text-muted-foreground">Salário (salário limpo)</span>
+            <span className="text-sm text-finance-yellow font-medium">Salário (salário limpo)</span>
             {editingSalary ? (
               <div className="flex items-center gap-2">
                 <Input className="w-32 h-8 text-sm" type="number" step="0.01" placeholder="Valor limpo" value={salaryInput} onChange={e => setSalaryInput(e.target.value)} onKeyDown={e => e.key === "Enter" && handleSalarySave()} autoFocus />
@@ -150,7 +153,7 @@ const ExpensesContent = () => {
 
           {/* Vale */}
           <div className="flex items-center justify-between py-2 border-b border-border">
-            <span className="text-sm text-finance-green flex items-center gap-1.5">
+            <span className="text-sm text-finance-green flex items-center gap-1.5 font-medium">
               <Gift className="h-3.5 w-3.5" /> Vale (benefício)
             </span>
             {editingVale ? (
@@ -168,7 +171,7 @@ const ExpensesContent = () => {
           {/* Extra incomes */}
           {extraIncomes.map(inc => (
             <div key={inc.id} className="flex items-center justify-between py-2 border-b border-border last:border-0">
-              <span className="text-sm text-muted-foreground">{inc.name}</span>
+              <span className="text-sm text-finance-cyan font-medium">{inc.name}</span>
               <div className="flex items-center gap-2">
                 {editingIncomeId === inc.id ? (
                   <>
@@ -185,6 +188,18 @@ const ExpensesContent = () => {
               </div>
             </div>
           ))}
+
+          {/* Total defined / remaining */}
+          <div className="flex items-center justify-between pt-3 mt-2">
+            <span className="text-xs text-muted-foreground uppercase tracking-wider">Total definido</span>
+            <span className="text-sm font-bold text-foreground">R$ {totalDefined.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}</span>
+          </div>
+          <div className="flex items-center justify-between pt-1">
+            <span className="text-xs text-muted-foreground uppercase tracking-wider">Sobra (após pagos)</span>
+            <span className={cn("text-sm font-bold", totalRemaining >= 0 ? "text-finance-green" : "text-destructive")}>
+              R$ {totalRemaining.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}
+            </span>
+          </div>
         </div>
 
         {/* Total Card */}
@@ -195,7 +210,7 @@ const ExpensesContent = () => {
                 <TrendingDown className="h-6 w-6 text-finance-blue" />
               </div>
               <div>
-                <p className="text-xs text-muted-foreground uppercase tracking-wider">Total Gastos — {MONTHS[currentMonth]}</p>
+                <p className="text-xs text-muted-foreground uppercase tracking-wider">Gastos — {MONTHS[currentMonth]}</p>
                 <p className="text-3xl font-bold text-foreground">R$ {total.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}</p>
                 <p className="text-xs text-muted-foreground">A pagar: <span className="text-finance-blue font-semibold">R$ {unpaidTotal.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}</span></p>
               </div>
