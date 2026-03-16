@@ -126,8 +126,8 @@ const DashboardContent = () => {
                   <span className="text-[10px] sm:text-xs font-medium text-muted-foreground uppercase tracking-wider">Gastos</span>
                   <div className="p-1.5 sm:p-2 rounded-lg bg-finance-blue/20"><TrendingDown className="h-3 w-3 sm:h-4 sm:w-4 text-finance-blue" /></div>
                 </div>
-                <p className="text-base sm:text-2xl font-bold text-foreground">R$ {expensesTotal.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}</p>
-                <p className="text-[10px] sm:text-xs text-muted-foreground mt-1">A pagar: <span className="text-finance-blue font-semibold">R$ {expensesUnpaid.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}</span></p>
+                <p className="text-xs sm:text-2xl font-bold text-foreground whitespace-nowrap overflow-hidden text-ellipsis">R$ {expensesTotal.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}</p>
+                <p className="text-[10px] sm:text-xs text-muted-foreground mt-1 whitespace-nowrap overflow-hidden text-ellipsis">A pagar: <span className="text-finance-blue font-semibold">R$ {expensesUnpaid.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}</span></p>
               </div>
 
               {/* Cartão */}
