@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { TrendingDown, Plus, Trash2, DollarSign, Pencil, Gift } from "lucide-react";
 import { useFinance, PaymentSources } from "@/contexts/FinanceContext";
 import { Button } from "@/components/ui/button";
@@ -12,19 +12,20 @@ const categories = ["Aluguel", "Alimentação", "Transporte", "Educação", "Sa�
 const MONTHS = ["Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"];
 
 const ExpensesContent = () => {
-  const now = new Date();
   const {
-    generalExpenses, addGeneralExpense, removeGeneralExpense,
+    selectedYear, selectedMonth,
+    addGeneralExpense, removeGeneralExpense,
     markGeneralExpensePaid, unmarkGeneralExpensePaid,
     getSalaryByMonth, updateSalary,
     getValeByMonth, updateVale,
     getExtraIncomeByMonth, addIncome, removeIncome, updateIncome,
     getExpensesTotalByMonth, getExpensesUnpaidTotalByMonth,
+    getGeneralExpensesByMonth,
     getUsedFromSource,
   } = useFinance();
 
-  const currentMonth = now.getMonth();
-  const currentYear = now.getFullYear();
+  const currentMonth = selectedMonth;
+  const currentYear = selectedYear;
 
   const [name, setName] = useState("");
   const [value, setValue] = useState("");
@@ -39,6 +40,17 @@ const ExpensesContent = () => {
   const [valeInput, setValeInput] = useState(vale > 0 ? vale.toString() : "");
   const [editingVale, setEditingVale] = useState(false);
 
+  // Reset inputs when month changes
+  useEffect(() => {
+    setSalaryInput(salary > 0 ? salary.toString() : "");
+    setEditingSalary(false);
+  }, [salary, currentYear, currentMonth]);
+
+  useEffect(() => {
+    setValeInput(vale > 0 ? vale.toString() : "");
+    setEditingVale(false);
+  }, [vale, currentYear, currentMonth]);
+
   const extraIncomes = getExtraIncomeByMonth(currentYear, currentMonth);
   const [extraOpen, setExtraOpen] = useState(false);
   const [extraName, setExtraName] = useState("");
@@ -48,6 +60,7 @@ const ExpensesContent = () => {
 
   const [payDialog, setPayDialog] = useState<{ id: string; name: string; value: number } | null>(null);
 
+  const monthExpenses = getGeneralExpensesByMonth(currentYear, currentMonth);
   const total = getExpensesTotalByMonth(currentYear, currentMonth);
   const unpaidTotal = getExpensesUnpaidTotalByMonth(currentYear, currentMonth);
 
@@ -61,7 +74,8 @@ const ExpensesContent = () => {
 
   const handleAdd = () => {
     if (!name.trim() || !value) return;
-    addGeneralExpense({ name: name.trim(), category, value: parseFloat(value), date: new Date().toISOString() });
+    const date = new Date(currentYear, currentMonth, 15).toISOString();
+    addGeneralExpense({ name: name.trim(), category, value: parseFloat(value), date });
     setName(""); setValue(""); setCategory(categories[0]); setOpen(false);
   };
 
@@ -78,7 +92,8 @@ const ExpensesContent = () => {
   const handleAddExtra = () => {
     const v = parseFloat(extraValue.replace(",", "."));
     if (extraName.trim() && !isNaN(v) && v > 0) {
-      addIncome({ name: `(extra) ${extraName.trim()}`, value: v, type: "extra", date: new Date().toISOString() });
+      const date = new Date(currentYear, currentMonth, 15).toISOString();
+      addIncome({ name: `(extra) ${extraName.trim()}`, value: v, type: "extra", date });
       setExtraName(""); setExtraValue(""); setExtraOpen(false);
     }
   };
@@ -235,12 +250,12 @@ const ExpensesContent = () => {
 
         {/* Expenses List */}
         <div className="bg-card border border-border rounded-xl p-4 sm:p-6">
-          <h3 className="text-sm font-semibold text-foreground mb-4">Todos os Gastos Gerais</h3>
-          {generalExpenses.length === 0 ? (
-            <p className="text-muted-foreground text-sm text-center py-8">Nenhum gasto registrado.</p>
+          <h3 className="text-sm font-semibold text-foreground mb-4">Gastos Gerais — {MONTHS[currentMonth]}</h3>
+          {monthExpenses.length === 0 ? (
+            <p className="text-muted-foreground text-sm text-center py-8">Nenhum gasto registrado neste mês.</p>
           ) : (
             <div className="flex flex-col gap-2">
-              {[...generalExpenses].reverse().map(expense => {
+              {[...monthExpenses].reverse().map(expense => {
                 const d = new Date(expense.date);
                 const sourceLabel = expense.paid && expense.paymentSources
                   ? Object.entries(expense.paymentSources).filter(([,v]) => v && v > 0).map(([k]) => k === "salary" ? "Salário" : k === "extra" ? "Extra" : "Vale").join(" + ")

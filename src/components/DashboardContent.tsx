@@ -6,17 +6,17 @@ import { cn } from "@/lib/utils";
 const MONTHS = ["Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"];
 
 const DashboardContent = () => {
-  const now = new Date();
-  const currentMonth = now.getMonth();
-  const currentYear = now.getFullYear();
-
   const {
+    selectedYear, selectedMonth,
     getCardTotalByMonth, getCardUnpaidTotalByMonth,
     getExpensesTotalByMonth, getExpensesUnpaidTotalByMonth,
     getCardExpensesByMonth, getGeneralExpensesByMonth,
     getSalaryByMonth, getValeByMonth, getExtraIncomeByMonth,
     getUsedFromSource,
   } = useFinance();
+
+  const currentMonth = selectedMonth;
+  const currentYear = selectedYear;
 
   const cardTotal = getCardTotalByMonth(currentYear, currentMonth);
   const cardUnpaid = getCardUnpaidTotalByMonth(currentYear, currentMonth);
@@ -46,6 +46,8 @@ const DashboardContent = () => {
     ...cardExpenses.map(e => ({ ...e, source: "Cartão", color: "text-destructive" })),
     ...generalExpenses.map(e => ({ ...e, source: "Gasto", color: "text-finance-blue" })),
   ].sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()).slice(0, 8);
+
+  const calendarDate = new Date(currentYear, currentMonth, 15);
 
   return (
     <div className="flex-1 p-4 sm:p-6 lg:p-8 overflow-auto">
@@ -167,7 +169,8 @@ const DashboardContent = () => {
             <div className="bg-card border border-border rounded-xl p-4 flex items-center justify-center">
               <Calendar
                 mode="single"
-                selected={now}
+                selected={calendarDate}
+                month={calendarDate}
                 className={cn("p-0 w-full pointer-events-auto [&_.rdp-day_today]:bg-primary/20 [&_.rdp-day_today]:text-primary [&_.rdp-day_today]:font-semibold")}
                 classNames={{
                   months: "flex flex-col w-full", month: "space-y-2 w-full",
