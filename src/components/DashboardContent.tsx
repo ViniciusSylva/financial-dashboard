@@ -65,7 +65,7 @@ const DashboardContent = () => {
                   <span className="text-[10px] sm:text-xs font-medium text-muted-foreground uppercase tracking-wider">Salário (limpo)</span>
                   <div className="p-1.5 sm:p-2 rounded-lg bg-finance-yellow/20"><DollarSign className="h-3 w-3 sm:h-4 sm:w-4 text-finance-yellow" /></div>
                 </div>
-                <p className="text-[11px] sm:text-lg font-bold text-finance-yellow whitespace-nowrap overflow-hidden text-ellipsis">R$ {salary.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}</p>
+                <p className="text-[10px] xs:text-[11px] sm:text-lg font-bold text-finance-yellow break-all sm:break-normal">R$ {salary.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}</p>
                 <div className="flex items-center justify-between mt-2 pt-2 border-t border-border">
                   <span className="text-[10px] sm:text-xs text-muted-foreground">Restante</span>
                   <span className={cn("text-xs sm:text-sm font-bold", remainingSalary >= 0 ? "text-finance-green" : "text-destructive")}>
