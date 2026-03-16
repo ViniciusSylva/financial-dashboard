@@ -84,7 +84,7 @@ const DashboardContent = () => {
                 <div className="flex items-center justify-between mt-2 pt-2 border-t border-border">
                   <span className="text-[10px] sm:text-xs text-muted-foreground">Restante</span>
                   <span className={cn("text-xs sm:text-sm font-bold", remainingVale >= 0 ? "text-finance-green" : "text-destructive")}>
-                    R$ {remainingVale.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}
+                    <span className="whitespace-nowrap">R$ {remainingVale.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}</span>
                   </span>
                 </div>
               </div>
