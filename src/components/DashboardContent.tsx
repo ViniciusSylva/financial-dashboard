@@ -80,7 +80,7 @@ const DashboardContent = () => {
                   <span className="text-[10px] sm:text-xs font-medium text-muted-foreground uppercase tracking-wider">Vale</span>
                   <div className="p-1.5 sm:p-2 rounded-lg bg-finance-green/20"><Gift className="h-3 w-3 sm:h-4 sm:w-4 text-finance-green" /></div>
                 </div>
-                <p className="text-[11px] sm:text-lg font-bold text-finance-green whitespace-nowrap overflow-hidden text-ellipsis">R$ {vale.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}</p>
+                <p className="text-[10px] xs:text-[11px] sm:text-lg font-bold text-finance-green break-all sm:break-normal">R$ {vale.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}</p>
                 <div className="flex items-center justify-between mt-2 pt-2 border-t border-border">
                   <span className="text-[10px] sm:text-xs text-muted-foreground">Restante</span>
                   <span className={cn("text-xs sm:text-sm font-bold", remainingVale >= 0 ? "text-finance-green" : "text-destructive")}>
