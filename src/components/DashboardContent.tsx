@@ -65,7 +65,7 @@ const DashboardContent = () => {
                   <span className="text-[10px] sm:text-xs font-medium text-muted-foreground uppercase tracking-wider">Salário (limpo)</span>
                   <div className="p-1.5 sm:p-2 rounded-lg bg-finance-yellow/20"><DollarSign className="h-3 w-3 sm:h-4 sm:w-4 text-finance-yellow" /></div>
                 </div>
-                <p className="text-[11px] sm:text-lg font-bold text-finance-yellow whitespace-nowrap overflow-hidden text-ellipsis">R$ {salary.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}</p>
+                <p className="text-[10px] xs:text-[11px] sm:text-lg font-bold text-finance-yellow break-all sm:break-normal">R$ {salary.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}</p>
                 <div className="flex items-center justify-between mt-2 pt-2 border-t border-border">
                   <span className="text-[10px] sm:text-xs text-muted-foreground">Restante</span>
                   <span className={cn("text-xs sm:text-sm font-bold", remainingSalary >= 0 ? "text-finance-green" : "text-destructive")}>
@@ -80,7 +80,7 @@ const DashboardContent = () => {
                   <span className="text-[10px] sm:text-xs font-medium text-muted-foreground uppercase tracking-wider">Vale</span>
                   <div className="p-1.5 sm:p-2 rounded-lg bg-finance-green/20"><Gift className="h-3 w-3 sm:h-4 sm:w-4 text-finance-green" /></div>
                 </div>
-                <p className="text-[11px] sm:text-lg font-bold text-finance-green whitespace-nowrap overflow-hidden text-ellipsis">R$ {vale.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}</p>
+                <p className="text-[10px] xs:text-[11px] sm:text-lg font-bold text-finance-green break-all sm:break-normal">R$ {vale.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}</p>
                 <div className="flex items-center justify-between mt-2 pt-2 border-t border-border">
                   <span className="text-[10px] sm:text-xs text-muted-foreground">Restante</span>
                   <span className={cn("text-xs sm:text-sm font-bold", remainingVale >= 0 ? "text-finance-green" : "text-destructive")}>
@@ -95,7 +95,7 @@ const DashboardContent = () => {
                   <span className="text-[10px] sm:text-xs font-medium text-muted-foreground uppercase tracking-wider">Extra</span>
                   <div className="p-1.5 sm:p-2 rounded-lg bg-finance-cyan/20"><Wallet className="h-3 w-3 sm:h-4 sm:w-4 text-finance-cyan" /></div>
                 </div>
-                <p className="text-[11px] sm:text-lg font-bold text-finance-cyan whitespace-nowrap overflow-hidden text-ellipsis">R$ {extraTotal.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}</p>
+                <p className="text-[10px] xs:text-[11px] sm:text-lg font-bold text-finance-cyan break-all sm:break-normal">R$ {extraTotal.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}</p>
                 {extraIncomes.map(inc => (
                   <p key={inc.id} className="text-[10px] sm:text-xs text-muted-foreground truncate">{inc.name}: R$ {inc.value.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}</p>
                 ))}
@@ -116,8 +116,8 @@ const DashboardContent = () => {
                   <span className="text-[10px] sm:text-xs font-medium text-muted-foreground uppercase tracking-wider">Total Geral</span>
                   <div className="p-1.5 sm:p-2 rounded-lg bg-finance-yellow/20"><Wallet className="h-3 w-3 sm:h-4 sm:w-4 text-finance-yellow" /></div>
                 </div>
-                <p className="text-xs sm:text-2xl font-bold text-foreground whitespace-nowrap overflow-hidden text-ellipsis">R$ {totalAll.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}</p>
-                <p className="text-[10px] sm:text-xs text-muted-foreground mt-1 whitespace-nowrap overflow-hidden text-ellipsis">A pagar: <span className="text-finance-yellow font-semibold">R$ {totalUnpaid.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}</span></p>
+                <p className="text-[10px] xs:text-xs sm:text-2xl font-bold text-foreground break-all sm:break-normal">R$ {totalAll.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}</p>
+                <p className="text-[9px] sm:text-xs text-muted-foreground mt-1 break-all sm:break-normal">A pagar: <span className="text-finance-yellow font-semibold">R$ {totalUnpaid.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}</span></p>
               </div>
 
               {/* Gastos */}
@@ -126,8 +126,8 @@ const DashboardContent = () => {
                   <span className="text-[10px] sm:text-xs font-medium text-muted-foreground uppercase tracking-wider">Gastos</span>
                   <div className="p-1.5 sm:p-2 rounded-lg bg-finance-blue/20"><TrendingDown className="h-3 w-3 sm:h-4 sm:w-4 text-finance-blue" /></div>
                 </div>
-                <p className="text-xs sm:text-2xl font-bold text-foreground whitespace-nowrap overflow-hidden text-ellipsis">R$ {expensesTotal.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}</p>
-                <p className="text-[10px] sm:text-xs text-muted-foreground mt-1 whitespace-nowrap overflow-hidden text-ellipsis">A pagar: <span className="text-finance-blue font-semibold">R$ {expensesUnpaid.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}</span></p>
+                <p className="text-[10px] xs:text-xs sm:text-2xl font-bold text-foreground break-all sm:break-normal">R$ {expensesTotal.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}</p>
+                <p className="text-[9px] sm:text-xs text-muted-foreground mt-1 break-all sm:break-normal">A pagar: <span className="text-finance-blue font-semibold">R$ {expensesUnpaid.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}</span></p>
               </div>
 
               {/* Cartão */}
@@ -136,8 +136,8 @@ const DashboardContent = () => {
                   <span className="text-[10px] sm:text-xs font-medium text-muted-foreground uppercase tracking-wider">Cartão</span>
                   <div className="p-1.5 sm:p-2 rounded-lg bg-destructive/20"><CreditCard className="h-3 w-3 sm:h-4 sm:w-4 text-destructive" /></div>
                 </div>
-                <p className="text-xs sm:text-2xl font-bold text-foreground whitespace-nowrap overflow-hidden text-ellipsis">R$ {cardTotal.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}</p>
-                <p className="text-[10px] sm:text-xs text-muted-foreground mt-1 whitespace-nowrap overflow-hidden text-ellipsis">A pagar: <span className="text-destructive font-semibold">R$ {cardUnpaid.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}</span></p>
+                <p className="text-[10px] xs:text-xs sm:text-2xl font-bold text-foreground break-all sm:break-normal">R$ {cardTotal.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}</p>
+                <p className="text-[9px] sm:text-xs text-muted-foreground mt-1 break-all sm:break-normal">A pagar: <span className="text-destructive font-semibold">R$ {cardUnpaid.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}</span></p>
               </div>
             </div>
 
