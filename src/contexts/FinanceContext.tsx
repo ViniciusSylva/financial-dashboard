@@ -25,6 +25,10 @@ export interface Income {
 }
 
 interface FinanceContextType {
+  selectedYear: number;
+  selectedMonth: number;
+  setSelectedYear: (y: number) => void;
+  setSelectedMonth: (m: number) => void;
   cardExpenses: Expense[];
   generalExpenses: Expense[];
   incomes: Income[];
@@ -70,7 +74,15 @@ function loadFromStorage<T>(key: string, fallback: T): T {
   }
 }
 
+function makeMonthDate(year: number, month: number): string {
+  return new Date(year, month, 15).toISOString();
+}
+
 export const FinanceProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  const now = new Date();
+  const [selectedYear, setSelectedYear] = useState(now.getFullYear());
+  const [selectedMonth, setSelectedMonth] = useState(now.getMonth());
+
   const [cardExpenses, setCardExpenses] = useState<Expense[]>(() => loadFromStorage(CARD_KEY, []));
   const [generalExpenses, setGeneralExpenses] = useState<Expense[]>(() => loadFromStorage(GENERAL_KEY, []));
   const [incomes, setIncomes] = useState<Income[]>(() => loadFromStorage(INCOME_KEY, []));
@@ -116,24 +128,22 @@ export const FinanceProvider: React.FC<{ children: React.ReactNode }> = ({ child
   }, []);
 
   const updateSalary = useCallback((value: number) => {
-    const now = new Date();
-    const monthKey = `${now.getFullYear()}-${now.getMonth()}`;
+    const monthKey = `${selectedYear}-${selectedMonth}`;
     setIncomes(prev => {
       const existing = prev.find(i => i.type === "salary" && (() => { const d = new Date(i.date); return `${d.getFullYear()}-${d.getMonth()}`; })() === monthKey);
       if (existing) return prev.map(i => i.id === existing.id ? { ...i, value } : i);
-      return [...prev, { id: crypto.randomUUID(), name: "Salário (salário limpo)", value, type: "salary" as const, date: now.toISOString() }];
+      return [...prev, { id: crypto.randomUUID(), name: "Salário (salário limpo)", value, type: "salary" as const, date: makeMonthDate(selectedYear, selectedMonth) }];
     });
-  }, []);
+  }, [selectedYear, selectedMonth]);
 
   const updateVale = useCallback((value: number) => {
-    const now = new Date();
-    const monthKey = `${now.getFullYear()}-${now.getMonth()}`;
+    const monthKey = `${selectedYear}-${selectedMonth}`;
     setIncomes(prev => {
       const existing = prev.find(i => i.type === "vale" && (() => { const d = new Date(i.date); return `${d.getFullYear()}-${d.getMonth()}`; })() === monthKey);
       if (existing) return prev.map(i => i.id === existing.id ? { ...i, value } : i);
-      return [...prev, { id: crypto.randomUUID(), name: "Vale", value, type: "vale" as const, date: now.toISOString() }];
+      return [...prev, { id: crypto.randomUUID(), name: "Vale", value, type: "vale" as const, date: makeMonthDate(selectedYear, selectedMonth) }];
     });
-  }, []);
+  }, [selectedYear, selectedMonth]);
 
   const getSalaryByMonth = useCallback((year: number, month: number) => {
     const s = incomes.find(i => i.type === "salary" && (() => { const d = new Date(i.date); return d.getFullYear() === year && d.getMonth() === month; })());
@@ -189,6 +199,7 @@ export const FinanceProvider: React.FC<{ children: React.ReactNode }> = ({ child
 
   return (
     <FinanceContext.Provider value={{
+      selectedYear, selectedMonth, setSelectedYear, setSelectedMonth,
       cardExpenses, generalExpenses, incomes,
       addCardExpense, removeCardExpense, markCardExpensePaid, unmarkCardExpensePaid,
       addGeneralExpense, removeGeneralExpense, markGeneralExpensePaid, unmarkGeneralExpensePaid,

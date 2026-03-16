@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { CreditCard, Plus, Trash2 } from "lucide-react";
 import { useFinance, PaymentSources } from "@/contexts/FinanceContext";
 import { Button } from "@/components/ui/button";
@@ -12,13 +12,17 @@ const categories = ["Alimentação", "Compras", "Assinaturas", "Transporte", "La
 const MONTHS = ["Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"];
 
 const CardContent = () => {
-  const now = new Date();
   const {
+    selectedYear, selectedMonth,
     cardExpenses, addCardExpense, removeCardExpense,
     markCardExpensePaid, unmarkCardExpensePaid,
     getCardTotalByMonth, getCardUnpaidTotalByMonth,
+    getCardExpensesByMonth,
     getSalaryByMonth, getValeByMonth, getExtraIncomeByMonth, getUsedFromSource,
   } = useFinance();
+
+  const currentMonth = selectedMonth;
+  const currentYear = selectedYear;
 
   const [name, setName] = useState("");
   const [value, setValue] = useState("");
@@ -26,10 +30,9 @@ const CardContent = () => {
   const [open, setOpen] = useState(false);
   const [payDialog, setPayDialog] = useState<{ id: string; name: string; value: number } | null>(null);
 
-  const currentMonth = now.getMonth();
-  const currentYear = now.getFullYear();
   const total = getCardTotalByMonth(currentYear, currentMonth);
   const unpaidTotal = getCardUnpaidTotalByMonth(currentYear, currentMonth);
+  const monthExpenses = getCardExpensesByMonth(currentYear, currentMonth);
 
   const salary = getSalaryByMonth(currentYear, currentMonth);
   const vale = getValeByMonth(currentYear, currentMonth);
@@ -41,7 +44,8 @@ const CardContent = () => {
 
   const handleAdd = () => {
     if (!name.trim() || !value) return;
-    addCardExpense({ name: name.trim(), category, value: parseFloat(value), date: new Date().toISOString() });
+    const date = new Date(currentYear, currentMonth, 15).toISOString();
+    addCardExpense({ name: name.trim(), category, value: parseFloat(value), date });
     setName(""); setValue(""); setCategory(categories[0]); setOpen(false);
   };
 
@@ -98,12 +102,12 @@ const CardContent = () => {
         </div>
 
         <div className="bg-card border border-border rounded-xl p-4 sm:p-6">
-          <h3 className="text-sm font-semibold text-foreground mb-4">Todos os Gastos do Cartão</h3>
-          {cardExpenses.length === 0 ? (
-            <p className="text-muted-foreground text-sm text-center py-8">Nenhum gasto registrado.</p>
+          <h3 className="text-sm font-semibold text-foreground mb-4">Gastos do Cartão — {MONTHS[currentMonth]}</h3>
+          {monthExpenses.length === 0 ? (
+            <p className="text-muted-foreground text-sm text-center py-8">Nenhum gasto registrado neste mês.</p>
           ) : (
             <div className="flex flex-col gap-2">
-              {[...cardExpenses].reverse().map(expense => {
+              {[...monthExpenses].reverse().map(expense => {
                 const d = new Date(expense.date);
                 const sourceLabel = expense.paid && expense.paymentSources
                   ? Object.entries(expense.paymentSources).filter(([,v]) => v && v > 0).map(([k]) => k === "salary" ? "Salário" : k === "extra" ? "Extra" : "Vale").join(" + ")

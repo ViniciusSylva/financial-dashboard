@@ -1,5 +1,6 @@
 import FinanceSidebar from "@/components/FinanceSidebar";
 import MobileBottomNav from "@/components/MobileBottomNav";
+import MonthSelector from "@/components/MonthSelector";
 import { Outlet } from "react-router-dom";
 
 const Layout = () => {
@@ -9,9 +10,12 @@ const Layout = () => {
       <div className="hidden md:block">
         <FinanceSidebar />
       </div>
-      {/* Main content - add bottom padding on mobile for nav */}
-      <div className="flex-1 pb-16 md:pb-0">
-        <Outlet />
+      {/* Main content */}
+      <div className="flex-1 flex flex-col pb-16 md:pb-0">
+        <MonthSelector />
+        <div className="flex-1 overflow-auto">
+          <Outlet />
+        </div>
       </div>
       {/* Mobile bottom nav */}
       <MobileBottomNav />
