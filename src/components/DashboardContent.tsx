@@ -95,7 +95,7 @@ const DashboardContent = () => {
                   <span className="text-[10px] sm:text-xs font-medium text-muted-foreground uppercase tracking-wider">Extra</span>
                   <div className="p-1.5 sm:p-2 rounded-lg bg-finance-cyan/20"><Wallet className="h-3 w-3 sm:h-4 sm:w-4 text-finance-cyan" /></div>
                 </div>
-                <p className="text-sm sm:text-lg font-bold text-finance-cyan">R$ {extraTotal.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}</p>
+                <p className="text-[11px] sm:text-lg font-bold text-finance-cyan whitespace-nowrap overflow-hidden text-ellipsis">R$ {extraTotal.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}</p>
                 {extraIncomes.map(inc => (
                   <p key={inc.id} className="text-[10px] sm:text-xs text-muted-foreground truncate">{inc.name}: R$ {inc.value.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}</p>
                 ))}
