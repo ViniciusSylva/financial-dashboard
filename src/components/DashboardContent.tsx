@@ -65,11 +65,11 @@ const DashboardContent = () => {
                   <span className="text-[10px] sm:text-xs font-medium text-muted-foreground uppercase tracking-wider">Salário (limpo)</span>
                   <div className="p-1.5 sm:p-2 rounded-lg bg-finance-yellow/20"><DollarSign className="h-3 w-3 sm:h-4 sm:w-4 text-finance-yellow" /></div>
                 </div>
-                <p className="text-sm sm:text-lg font-bold text-finance-yellow">R$ {salary.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}</p>
+                <p className="text-[11px] sm:text-lg font-bold text-finance-yellow whitespace-nowrap overflow-hidden text-ellipsis">R$ {salary.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}</p>
                 <div className="flex items-center justify-between mt-2 pt-2 border-t border-border">
                   <span className="text-[10px] sm:text-xs text-muted-foreground">Restante</span>
                   <span className={cn("text-xs sm:text-sm font-bold", remainingSalary >= 0 ? "text-finance-green" : "text-destructive")}>
-                    R$ {remainingSalary.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}
+                    <span className="whitespace-nowrap">R$ {remainingSalary.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}</span>
                   </span>
                 </div>
               </div>
@@ -80,11 +80,11 @@ const DashboardContent = () => {
                   <span className="text-[10px] sm:text-xs font-medium text-muted-foreground uppercase tracking-wider">Vale</span>
                   <div className="p-1.5 sm:p-2 rounded-lg bg-finance-green/20"><Gift className="h-3 w-3 sm:h-4 sm:w-4 text-finance-green" /></div>
                 </div>
-                <p className="text-sm sm:text-lg font-bold text-finance-green">R$ {vale.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}</p>
+                <p className="text-[11px] sm:text-lg font-bold text-finance-green whitespace-nowrap overflow-hidden text-ellipsis">R$ {vale.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}</p>
                 <div className="flex items-center justify-between mt-2 pt-2 border-t border-border">
                   <span className="text-[10px] sm:text-xs text-muted-foreground">Restante</span>
                   <span className={cn("text-xs sm:text-sm font-bold", remainingVale >= 0 ? "text-finance-green" : "text-destructive")}>
-                    R$ {remainingVale.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}
+                    <span className="whitespace-nowrap">R$ {remainingVale.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}</span>
                   </span>
                 </div>
               </div>
@@ -95,14 +95,14 @@ const DashboardContent = () => {
                   <span className="text-[10px] sm:text-xs font-medium text-muted-foreground uppercase tracking-wider">Extra</span>
                   <div className="p-1.5 sm:p-2 rounded-lg bg-finance-cyan/20"><Wallet className="h-3 w-3 sm:h-4 sm:w-4 text-finance-cyan" /></div>
                 </div>
-                <p className="text-sm sm:text-lg font-bold text-finance-cyan">R$ {extraTotal.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}</p>
+                <p className="text-[11px] sm:text-lg font-bold text-finance-cyan whitespace-nowrap overflow-hidden text-ellipsis">R$ {extraTotal.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}</p>
                 {extraIncomes.map(inc => (
                   <p key={inc.id} className="text-[10px] sm:text-xs text-muted-foreground truncate">{inc.name}: R$ {inc.value.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}</p>
                 ))}
                 <div className="flex items-center justify-between mt-2 pt-2 border-t border-border">
                   <span className="text-[10px] sm:text-xs text-muted-foreground">Restante</span>
                   <span className={cn("text-xs sm:text-sm font-bold", remainingExtra >= 0 ? "text-finance-green" : "text-destructive")}>
-                    R$ {remainingExtra.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}
+                    <span className="whitespace-nowrap">R$ {remainingExtra.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}</span>
                   </span>
                 </div>
               </div>
@@ -116,8 +116,8 @@ const DashboardContent = () => {
                   <span className="text-[10px] sm:text-xs font-medium text-muted-foreground uppercase tracking-wider">Total Geral</span>
                   <div className="p-1.5 sm:p-2 rounded-lg bg-finance-yellow/20"><Wallet className="h-3 w-3 sm:h-4 sm:w-4 text-finance-yellow" /></div>
                 </div>
-                <p className="text-base sm:text-2xl font-bold text-foreground">R$ {totalAll.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}</p>
-                <p className="text-[10px] sm:text-xs text-muted-foreground mt-1">A pagar: <span className="text-finance-yellow font-semibold">R$ {totalUnpaid.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}</span></p>
+                <p className="text-xs sm:text-2xl font-bold text-foreground whitespace-nowrap overflow-hidden text-ellipsis">R$ {totalAll.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}</p>
+                <p className="text-[10px] sm:text-xs text-muted-foreground mt-1 whitespace-nowrap overflow-hidden text-ellipsis">A pagar: <span className="text-finance-yellow font-semibold">R$ {totalUnpaid.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}</span></p>
               </div>
 
               {/* Gastos */}
@@ -126,8 +126,8 @@ const DashboardContent = () => {
                   <span className="text-[10px] sm:text-xs font-medium text-muted-foreground uppercase tracking-wider">Gastos</span>
                   <div className="p-1.5 sm:p-2 rounded-lg bg-finance-blue/20"><TrendingDown className="h-3 w-3 sm:h-4 sm:w-4 text-finance-blue" /></div>
                 </div>
-                <p className="text-base sm:text-2xl font-bold text-foreground">R$ {expensesTotal.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}</p>
-                <p className="text-[10px] sm:text-xs text-muted-foreground mt-1">A pagar: <span className="text-finance-blue font-semibold">R$ {expensesUnpaid.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}</span></p>
+                <p className="text-xs sm:text-2xl font-bold text-foreground whitespace-nowrap overflow-hidden text-ellipsis">R$ {expensesTotal.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}</p>
+                <p className="text-[10px] sm:text-xs text-muted-foreground mt-1 whitespace-nowrap overflow-hidden text-ellipsis">A pagar: <span className="text-finance-blue font-semibold">R$ {expensesUnpaid.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}</span></p>
               </div>
 
               {/* Cartão */}
@@ -136,8 +136,8 @@ const DashboardContent = () => {
                   <span className="text-[10px] sm:text-xs font-medium text-muted-foreground uppercase tracking-wider">Cartão</span>
                   <div className="p-1.5 sm:p-2 rounded-lg bg-destructive/20"><CreditCard className="h-3 w-3 sm:h-4 sm:w-4 text-destructive" /></div>
                 </div>
-                <p className="text-base sm:text-2xl font-bold text-foreground">R$ {cardTotal.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}</p>
-                <p className="text-[10px] sm:text-xs text-muted-foreground mt-1">A pagar: <span className="text-destructive font-semibold">R$ {cardUnpaid.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}</span></p>
+                <p className="text-xs sm:text-2xl font-bold text-foreground whitespace-nowrap overflow-hidden text-ellipsis">R$ {cardTotal.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}</p>
+                <p className="text-[10px] sm:text-xs text-muted-foreground mt-1 whitespace-nowrap overflow-hidden text-ellipsis">A pagar: <span className="text-destructive font-semibold">R$ {cardUnpaid.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}</span></p>
               </div>
             </div>
 
@@ -164,22 +164,22 @@ const DashboardContent = () => {
 
           {/* Calendar - hidden on small mobile */}
           <div className="hidden sm:block lg:col-span-1">
-            <div className="bg-card border border-border rounded-xl p-4">
+            <div className="bg-card border border-border rounded-xl p-4 flex items-center justify-center">
               <Calendar
                 mode="single"
                 selected={now}
-                className={cn("p-0 pointer-events-auto [&_.rdp-day_today]:bg-primary/20 [&_.rdp-day_today]:text-primary [&_.rdp-day_today]:font-semibold")}
+                className={cn("p-0 w-full pointer-events-auto [&_.rdp-day_today]:bg-primary/20 [&_.rdp-day_today]:text-primary [&_.rdp-day_today]:font-semibold")}
                 classNames={{
-                  months: "flex flex-col", month: "space-y-2",
+                  months: "flex flex-col w-full", month: "space-y-2 w-full",
                   caption: "flex justify-center pt-1 relative items-center",
-                  caption_label: "text-xs font-medium text-muted-foreground",
+                  caption_label: "text-sm font-medium text-muted-foreground",
                   nav: "space-x-1 flex items-center",
-                  nav_button: "h-6 w-6 bg-transparent p-0 opacity-50 hover:opacity-100 inline-flex items-center justify-center rounded-md border border-border",
+                  nav_button: "h-7 w-7 bg-transparent p-0 opacity-50 hover:opacity-100 inline-flex items-center justify-center rounded-md border border-border",
                   nav_button_previous: "absolute left-1", nav_button_next: "absolute right-1",
-                  table: "w-full border-collapse", head_row: "flex",
-                  head_cell: "text-muted-foreground rounded-md w-8 font-normal text-[0.65rem]",
-                  row: "flex w-full mt-1", cell: "h-8 w-8 text-center text-xs p-0 relative",
-                  day: "h-8 w-8 p-0 font-normal text-muted-foreground hover:bg-secondary rounded-md inline-flex items-center justify-center",
+                  table: "w-full border-collapse", head_row: "flex justify-between",
+                  head_cell: "text-muted-foreground rounded-md flex-1 text-center font-normal text-[0.75rem]",
+                  row: "flex w-full justify-between mt-2", cell: "flex-1 aspect-square text-center text-sm p-0 relative flex items-center justify-center",
+                  day: "h-9 w-9 p-0 font-normal text-muted-foreground hover:bg-secondary rounded-md inline-flex items-center justify-center",
                   day_selected: "bg-primary/20 text-primary font-semibold hover:bg-primary/30",
                   day_today: "bg-primary/15 text-primary font-semibold",
                   day_outside: "text-muted-foreground/30", day_disabled: "text-muted-foreground/30", day_hidden: "invisible",
