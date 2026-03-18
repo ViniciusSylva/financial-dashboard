@@ -2,6 +2,7 @@ import { CreditCard, Wallet, TrendingDown, DollarSign, Gift } from "lucide-react
 import { useFinance } from "@/contexts/FinanceContext";
 import { Calendar } from "@/components/ui/calendar";
 import { cn } from "@/lib/utils";
+import { ptBR } from "date-fns/locale";
 
 const MONTHS = ["Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"];
 
