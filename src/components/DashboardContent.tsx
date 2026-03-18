@@ -47,7 +47,9 @@ const DashboardContent = () => {
     ...generalExpenses.map(e => ({ ...e, source: "Gasto", color: "text-finance-blue" })),
   ].sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()).slice(0, 8);
 
-  const calendarDate = new Date(currentYear, currentMonth, 15);
+  const calendarMonth = new Date(currentYear, currentMonth, 1);
+  const now = new Date();
+  const todayInSelectedMonth = currentYear === now.getFullYear() && currentMonth === now.getMonth() ? now : undefined;
 
   return (
     <div className="flex-1 p-4 sm:p-6 lg:p-8 overflow-auto">
