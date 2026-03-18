@@ -171,21 +171,20 @@ const DashboardContent = () => {
             <div className="bg-card border border-border rounded-xl p-4 flex items-center justify-center">
               <Calendar
                 mode="single"
-                selected={calendarDate}
-                month={calendarDate}
-                className={cn("p-0 w-full pointer-events-auto [&_.rdp-day_today]:bg-primary/20 [&_.rdp-day_today]:text-primary [&_.rdp-day_today]:font-semibold")}
+                selected={todayInSelectedMonth}
+                month={calendarMonth}
+                locale={ptBR}
+                className={cn("p-0 w-full pointer-events-none")}
                 classNames={{
                   months: "flex flex-col w-full", month: "space-y-2 w-full",
                   caption: "flex justify-center pt-1 relative items-center",
                   caption_label: "text-sm font-medium text-muted-foreground",
-                  nav: "space-x-1 flex items-center",
-                  nav_button: "h-7 w-7 bg-transparent p-0 opacity-50 hover:opacity-100 inline-flex items-center justify-center rounded-md border border-border",
-                  nav_button_previous: "absolute left-1", nav_button_next: "absolute right-1",
+                  nav: "hidden",
                   table: "w-full border-collapse", head_row: "flex justify-between",
-                  head_cell: "text-muted-foreground rounded-md flex-1 text-center font-normal text-[0.75rem]",
+                  head_cell: "text-muted-foreground rounded-md flex-1 text-center font-normal text-[0.75rem] capitalize",
                   row: "flex w-full justify-between mt-2", cell: "flex-1 aspect-square text-center text-sm p-0 relative flex items-center justify-center",
-                  day: "h-9 w-9 p-0 font-normal text-muted-foreground hover:bg-secondary rounded-md inline-flex items-center justify-center",
-                  day_selected: "bg-primary/20 text-primary font-semibold hover:bg-primary/30",
+                  day: "h-9 w-9 p-0 font-normal text-muted-foreground rounded-md inline-flex items-center justify-center",
+                  day_selected: "bg-primary/20 text-primary font-semibold",
                   day_today: "bg-primary/15 text-primary font-semibold",
                   day_outside: "text-muted-foreground/30", day_disabled: "text-muted-foreground/30", day_hidden: "invisible",
                 }}
