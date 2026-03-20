@@ -1,73 +1,92 @@
-# Welcome to your Lovable project
+💰 Finance Splash
 
-## Project info
+Projeto de controle financeiro desenvolvido para aprender tecnologias modernas e entender como aplicações reais funcionam.
 
-**URL**: https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID
+🧠 Sobre
 
-## How can I edit this code?
+Projeto feito com apoio de IA para:
 
-There are several ways of editing your application.
+Aprender desenvolvimento frontend moderno
 
-**Use Lovable**
+Entender estrutura de projetos reais
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID) and start prompting.
+Explorar até onde a IA pode ajudar no desenvolvimento
 
-Changes made via Lovable will be committed automatically to this repo.
+O foco foi entender o funcionamento, não só gerar código.
 
-**Use your preferred IDE**
+🚀 Tecnologias
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+React
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+Vite
 
-Follow these steps:
+Tailwind CSS
 
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
+TypeScript
 
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
+📦 Aprendizados
 
-# Step 3: Install the necessary dependencies.
-npm i
+npm → instala dependências e roda o projeto
 
-# Step 4: Start the development server with auto-reloading and an instant preview.
+Vite → cria servidor e faz o projeto funcionar
+
+React → cria a interface com componentes
+
+Hooks → controlam a lógica
+
+TypeScript → evita erros com tipagem
+
+Tailwind → estilização rápida com classes
+
+UI → tudo que o usuário vê
+
+Compilação → TS vira JS para o navegador entender
+
+📁 Estrutura
+src/
+├── componentes/
+├── páginas/
+├── contextos/
+├── ganchos/
+├── biblioteca/
+
+Fluxo:
+
+main.tsx → App.tsx → páginas → componentes
+⚙️ COMO RODAR O PROJETO (100%)
+🔥 1. Instalar o Node.js
+
+Baixe e instale: https://nodejs.org
+
+📂 2. Abrir o projeto no terminal
+cd finance-splash
+📦 3. Instalar dependências
+npm install
+
+👉 Isso cria a pasta node_modules
+
+▶️ 4. Rodar o projeto
 npm run dev
-```
+🌐 5. Abrir no navegador
 
-**Edit a file directly in GitHub**
+Acesse:
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+http://localhost:5173
+⚠️ IMPORTANTE
 
-**Use GitHub Codespaces**
+❌ Não abra o index.html direto
+✔️ Sempre use npm run dev
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+📌 Conclusão
 
-## What technologies are used for this project?
+Projeto focado em aprendizado prático com:
 
-This project is built with:
+arquitetura moderna
 
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
+uso de IA
 
-## How can I deploy this project?
+entendimento real das ferramentas
 
-Simply open [Lovable](https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID) and click on Share -> Publish.
+organização de pastas
 
-## Can I connect a custom domain to my Lovable project?
-
-Yes, you can!
-
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
-
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/features/custom-domain#custom-domain)
+✍️ Vinicius Silva
