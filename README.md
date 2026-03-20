@@ -1,4 +1,4 @@
-# 💰 Finance Splash
+# 💰 Dashboard Financ
 
 Projeto de controle financeiro desenvolvido para aprender tecnologias modernas e entender como aplicações reais funcionam.
 
