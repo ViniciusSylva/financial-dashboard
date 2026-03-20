@@ -40,7 +40,7 @@ Tailwind → estilização rápida com classes
 
 UI → tudo que o usuário vê
 
-Compilação → TS vira JS para o navegador entender
+Compilação → TypeScript vira JavaScript
 
 📁 Estrutura
 src/
@@ -50,29 +50,29 @@ src/
 ├── ganchos/
 ├── biblioteca/
 
-Fluxo:
+Fluxo do projeto:
 
 main.tsx → App.tsx → páginas → componentes
-⚙️ COMO RODAR O PROJETO (100%)
-🔥 1. Instalar o Node.js
+⚙️ Como rodar o projeto (100%)
+1. Instalar o Node.js
 
 Baixe e instale: https://nodejs.org
 
-📂 2. Abrir o projeto no terminal
+2. Abrir o projeto no terminal
 cd finance-splash
-📦 3. Instalar dependências
+3. Instalar dependências
 npm install
 
 👉 Isso cria a pasta node_modules
 
-▶️ 4. Rodar o projeto
+4. Rodar o projeto
 npm run dev
-🌐 5. Abrir no navegador
+5. Abrir no navegador
 
 Acesse:
 
 http://localhost:5173
-⚠️ IMPORTANTE
+⚠️ Importante
 
 ❌ Não abra o index.html direto
 ✔️ Sempre use npm run dev
@@ -87,6 +87,6 @@ uso de IA
 
 entendimento real das ferramentas
 
-organização de pastas
+✍️ Autor
 
-✍️ Vinicius Silva
+Vinicius Silva 🚀
