@@ -1,125 +1,114 @@
-# 💰 Dashboard Financ
+# 💰 Financial Dashboard
 
-Projeto de controle financeiro desenvolvido para aprender tecnologias modernas e entender como aplicações reais funcionam.
-
----
-
-## 🧠 Sobre
-
-Projeto feito com apoio de IA para:
-
-- Aprender desenvolvimento frontend moderno
-- Entender estrutura de projetos reais
-- Explorar até onde a IA pode ajudar no desenvolvimento
-
-> O foco foi **entender o funcionamento**, não só gerar código.
-> 
+Financial control project developed to learn modern technologies and understand how real applications work.
 
 ---
 
-## 🚀 Tecnologias
+## 🧠 About
 
-- React
-- Vite
-- Tailwind CSS
-- TypeScript
+Project developed with the support of AI to:
 
----
+* Learn modern frontend development
+* Understand real project structure
+* Explore how far AI can assist in development
 
-## 📦 Aprendizados
-
-- **npm** → instala dependências e roda o projeto
-- **Vite** → cria servidor e faz o projeto funcionar
-- **React** → cria a interface com componentes
-- **Hooks** → controlam a lógica
-- **TypeScript** → evita erros com tipagem
-- **Tailwind** → estilização rápida com classes
-- **UI** → tudo que o usuário vê
-- **Compilação** → TypeScript vira JavaScript
+The focus was to understand how things work, not just generate code.
 
 ---
 
-## 📁 Estrutura
+## 🚀 Technologies
 
-```
+* React
+* Vite
+* Tailwind CSS
+* TypeScript
+
+---
+
+## 📦 Learnings
+
+* npm → installs dependencies and runs the project
+* Vite → creates the server and runs the app
+* React → builds the interface with components
+* Hooks → control the logic
+* TypeScript → prevents errors with typing
+* Tailwind → fast styling with utility classes
+* UI → everything the user sees
+* Compilation → TypeScript is converted to JavaScript
+
+---
+
+## 📁 Structure
+
+```id="struct1"
 src/
-├── componentes/
-├── páginas/
-├── contextos/
-├── ganchos/
-├── biblioteca/
+├── components/
+├── pages/
+├── contexts/
+├── hooks/
+├── lib/
 ```
 
-Fluxo do projeto:
+**Project flow:**
 
-```
-main.tsx → App.tsx → páginas → componentes
+```id="flow1"
+main.tsx → App.tsx → pages → components
 ```
 
 ---
 
-## ⚙️ Como rodar o projeto (100%)
+## ⚙️ How to run the project (100%)
 
-### 1. Instalar o Node.js
+### 1. Install Node.js
 
-Baixe e instale: [https://nodejs.org](https://nodejs.org/)
+Download and install: https://nodejs.org
 
----
+### 2. Open the project in the terminal
 
-### 2. Abrir o projeto no terminal
-
-```
+```bash id="cmd1"
 cd finance-splash
 ```
 
----
+### 3. Install dependencies
 
-### 3. Instalar dependências
-
-```
+```bash id="cmd2"
 npm install
 ```
 
-👉 Isso cria a pasta `node_modules`
+👉 This creates the `node_modules` folder
 
----
+### 4. Run the project
 
-### 4. Rodar o projeto
-
-```
+```bash id="cmd3"
 npm run dev
 ```
 
----
+### 5. Open in the browser
 
-### 5. Abrir no navegador
+Access:
 
-Acesse:
-
-```
 http://localhost:5173
-```
 
 ---
 
-## ⚠️ Importante
+## ⚠️ Important
 
-❌ Não abra o `index.html` direto
+❌ Do not open `index.html` directly
 
-✔️ Sempre use `npm run dev`
-
----
-
-## 📌 Conclusão
-
-Projeto focado em aprendizado prático com:
-
-- arquitetura moderna
-- uso de IA
-- entendimento real das ferramentas
+✔️ Always use `npm run dev`
 
 ---
 
-## ✍️ Autor
+## 📌 Conclusion
+
+Project focused on practical learning with:
+
+* Modern architecture
+* AI usage
+* Real understanding of tools
+
+---
+
+## ✍️ Author
 
 Vinicius Silva 🚀
